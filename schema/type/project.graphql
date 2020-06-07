@@ -1,0 +1,13 @@
+# A project, that could be for anything
+type Project {
+    # The id for the project
+    id: ID!
+    # The name of the project
+    name: String!
+    #Is the project publicly visible or not
+    public: Boolean!
+    # The components assosiated with the project
+    components: [Component!]
+    #Images to display for the project
+    images: [Media!]
+}

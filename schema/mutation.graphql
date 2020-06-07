@@ -1,0 +1,13 @@
+# Query type representing the possible mutations.
+type Mutation {
+    # Creates a new printer
+    createPrinter(name: String!, apiKey: String!, endpoint: String!): Printer
+    # Deletes the printer specified by the id
+    deletePrinter(id: ID!): ID
+    # Creates a new project
+    createProject(name: String!): Project
+    # Upload component
+    uploadComponent(projectId: ID!, component: Upload!): ID
+    # Adds an image to a project gallery
+    uploadImageToProject(request: UploadImageRequest!, projectId: ID!): ID
+}

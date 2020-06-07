@@ -1,0 +1,11 @@
+# A File on the 3D Printer
+type PrinterFile {
+    # Unique identifier for the file
+    hash: String!
+    # The files path
+    path: String!
+    # Estimated Duration
+    estimatedPrintTime: Float!
+    # Duration of last succesful print
+    lastPrintTime: Float!
+}

@@ -1,0 +1,9 @@
+# The media
+type Media {
+    #The Media's id
+    id: ID!
+    #The type of media
+    type: String!
+    # path to the media
+    path: String!
+}

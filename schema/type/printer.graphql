@@ -1,0 +1,13 @@
+# A 3D Printer
+type Printer {
+  # A unique identifier.
+  id: ID!
+  # The alias for the printer.
+  name: String!
+  # The files on the printer.
+  files(path: String): [PrinterFile!]
+  # The state of the print
+  state: PrinterState
+  # End point to use for communicating with the printer
+  endpoint: String!
+}

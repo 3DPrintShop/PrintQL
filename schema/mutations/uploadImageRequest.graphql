@@ -1,0 +1,7 @@
+# The users account
+input UploadImageRequest {
+    #The users email address
+    altText: String,
+    #The users id
+    image: Upload!
+}

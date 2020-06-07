@@ -1,0 +1,6 @@
+# The state of the printer
+type PrinterState {
+    # Is the printer connector
+    connection: String!
+    state: String!
+}

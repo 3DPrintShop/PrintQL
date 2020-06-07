@@ -1,0 +1,11 @@
+# The users account
+type Component {
+    #The component's id
+    id: ID!
+    #The name of the componenet
+    name: String!
+    # The type of component it is
+    type: String!
+    # The projects that make use of the component
+    projects: [Project!]
+}

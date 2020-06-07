@@ -1,0 +1,7 @@
+# The users account
+type Account {
+    #The users email address
+    email: String,
+    #The users id
+    id: String
+}

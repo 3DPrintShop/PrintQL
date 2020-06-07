@@ -1,0 +1,11 @@
+# The Query type represents all of the entry points into the API.
+type Query {
+  # List out printers
+  printers(id: ID): [Printer!]
+  # List out projects
+  projects(id: ID): [Project!]
+  # List out components
+  components(id: ID): [Component!]
+  #The user
+  self: Account
+}
