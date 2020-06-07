@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 	graphql "github.com/graph-gophers/graphql-go"
-	"github.com/vitiock/PrintQL/loader"
-	"github.com/vitiock/PrintQL/printdb"
+	"github.com/3DPrintShop/PrintQL/loader"
+	"github.com/3DPrintShop/PrintQL/printdb"
 )
 
 type ProjectResolver struct {

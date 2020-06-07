@@ -2,7 +2,7 @@ package resolver
 
 import (
 	"github.com/graph-gophers/graphql-go"
-	"github.com/vitiock/PrintQL/schema"
+	"github.com/3DPrintShop/PrintQL/schema"
 	"github.com/vitiock/oauthgraphql/resolver"
 	"testing"
 )

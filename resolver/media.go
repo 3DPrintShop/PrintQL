@@ -3,8 +3,8 @@ package resolver
 import (
 	"context"
 	"github.com/graph-gophers/graphql-go"
-	"github.com/vitiock/PrintQL/loader"
-	"github.com/vitiock/PrintQL/printdb"
+	"github.com/3DPrintShop/PrintQL/loader"
+	"github.com/3DPrintShop/PrintQL/printdb"
 )
 
 type MediaResolver struct {
@@ -34,5 +34,5 @@ func (r *MediaResolver) Type() string {
 }
 
 func (r *MediaResolver) Path() string {
-	return "/media/" + r.Media.ID + "." + r.Media.Type
+	return "/media/" + r.Media.ID + r.Media.Type
 }

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/graph-gophers/graphql-go"
 	graphqlupload "github.com/smithaitufe/go-graphql-upload"
-	"github.com/vitiock/PrintQL/printdb"
+	"github.com/3DPrintShop/PrintQL/printdb"
 	"path"
 )
 
@@ -26,7 +26,7 @@ func (r SchemaResolver) UploadImageToProject(ctx context.Context, args uploadIma
 
 	client := ctx.Value("client").(*printdb.Client)
 
-	imageId, err := client.CreateImage(printdb.NewImageRequest{AltText: args.Request.AltText, Type: path.Ext(args.Request.Image.FilePath)})
+	imageId, err := client.CreateImage(printdb.NewImageRequest{AltText: args.Request.AltText, Type: path.Ext(args.Request.Image.FileName)})
 	client.AssociateImageWithProject(printdb.AssociateImageWithProjectRequest{ProjectId: string(args.ProjectID), ImageId: imageId, Type: path.Ext(args.Request.Image.FileName)})
 
 	rd, err := args.Request.Image.CreateReadStream()

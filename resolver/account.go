@@ -2,7 +2,7 @@ package resolver
 
 import (
 	"context"
-	"github.com/vitiock/PrintQL/handler"
+	"github.com/3DPrintShop/PrintQL/handler"
 )
 
 type AccountResolver struct {

@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/boltdb/bolt"
-	"github.com/vitiock/PrintQL/printdb"
+	"github.com/3DPrintShop/PrintQL/printdb"
 	"log"
 	"net/http"
 	"time"
@@ -11,10 +11,10 @@ import (
 	"github.com/smithaitufe/go-graphql-upload"
 
 	"github.com/rs/cors"
-	"github.com/vitiock/PrintQL/handler"
-	"github.com/vitiock/PrintQL/loader"
-	"github.com/vitiock/PrintQL/resolver"
-	"github.com/vitiock/PrintQL/schema"
+	"github.com/3DPrintShop/PrintQL/handler"
+	"github.com/3DPrintShop/PrintQL/loader"
+	"github.com/3DPrintShop/PrintQL/resolver"
+	"github.com/3DPrintShop/PrintQL/schema"
 )
 
 func main() {
@@ -47,8 +47,10 @@ func main() {
 	mux := http.NewServeMux()
 	fs := http.FileServer(http.Dir("./static"))
 	upload := http.FileServer(http.Dir("./uploads"))
+	media := http.FileServer(http.Dir("./media"))
 	mux.Handle("/", fs)
 	mux.Handle("/assets/", http.StripPrefix("/assets/", upload))
+	mux.Handle("/media/", http.StripPrefix("/media/", media))
 	mux.Handle("/gql/", handler.GraphiQL{})
 	mux.Handle("/gql", handler.GraphiQL{})
 	mux.Handle("/graphql/", graphqlupload.Handler(handler.AddUserContext(h)))

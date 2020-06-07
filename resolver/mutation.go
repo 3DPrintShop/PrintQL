@@ -6,7 +6,7 @@ import (
 	"github.com/boltdb/bolt"
 	"github.com/graph-gophers/graphql-go"
 	graphqlupload "github.com/smithaitufe/go-graphql-upload"
-	"github.com/vitiock/PrintQL/printdb"
+	"github.com/3DPrintShop/PrintQL/printdb"
 	"io/ioutil"
 )
 

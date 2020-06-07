@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 	"github.com/graph-gophers/dataloader"
-	"github.com/vitiock/PrintQL/errors"
-	"github.com/vitiock/PrintQL/printdb"
+	"github.com/3DPrintShop/PrintQL/errors"
+	"github.com/3DPrintShop/PrintQL/printdb"
 	"sync"
 )
 
