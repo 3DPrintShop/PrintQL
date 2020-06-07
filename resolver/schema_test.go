@@ -1,14 +1,13 @@
 package resolver
 
 import (
-	"github.com/graph-gophers/graphql-go"
 	"github.com/3DPrintShop/PrintQL/schema"
-	"github.com/vitiock/oauthgraphql/resolver"
+	"github.com/graph-gophers/graphql-go"
 	"testing"
 )
 
 func TestResolversSatisfySchema(t *testing.T) {
-	rootResolver := &resolver.QueryResolver{}
+	rootResolver := &SchemaResolver{}
 	_, err := graphql.ParseSchema(schema.String(), rootResolver)
 	if err != nil {
 		t.Error(err)

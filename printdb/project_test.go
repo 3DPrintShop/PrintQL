@@ -78,8 +78,13 @@ func TestClient_AddComponentToProject(t *testing.T) {
 		return
 	}
 
+	componentId, err := client.CreateComponent(NewComponentRequest{
+		Name: TestComponentName,
+		Type: TestComponentType,
+	})
+
 	err = client.AssociateComponentWithProject(AssociateComponentWithProjectRequest{
-		ComponentId: "testComponent",
+		ComponentId: componentId,
 		ProjectId:   projectId,
 	})
 
@@ -103,7 +108,7 @@ func TestClient_AddComponentToProject(t *testing.T) {
 			t.Error()
 		}
 
-		value := string(pcb.Get([]byte("testComponent")))
+		value := string(pcb.Get([]byte(componentId)))
 
 		if value != "{}" {
 			t.Error("Failed to retrieve component association from expected bucket")

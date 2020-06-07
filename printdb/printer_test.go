@@ -8,6 +8,8 @@ const (
 	TestName     = "Name"
 	TestAPIKey   = "APIKey"
 	TestEndpoint = "EndPoint"
+	TestComponentType = "STL"
+	TestComponentName = "TestName"
 )
 
 func TestClient_CreatePrinterPrinter(t *testing.T) {
