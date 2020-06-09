@@ -3,9 +3,9 @@ package resolver
 import (
 	"context"
 	"fmt"
+	"github.com/3DPrintShop/PrintQL/printdb"
 	"github.com/graph-gophers/graphql-go"
 	graphqlupload "github.com/smithaitufe/go-graphql-upload"
-	"github.com/3DPrintShop/PrintQL/printdb"
 	"path"
 )
 

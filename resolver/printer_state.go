@@ -1,19 +1,19 @@
 package resolver
 
 import (
-	"fmt"
 	"context"
+	"fmt"
 	"github.com/vitiock/go-octoprint"
 )
 
 // FilmResolver resolves the Film type.
 type PrinterStateResolver struct {
 	ConnectionState octoprint.ConnectionState
-	PrinterState string
+	PrinterState    string
 }
 
 type NewPrinterStateArgs struct {
-	APIKey string
+	APIKey   string
 	Endpoint string
 }
 
@@ -21,16 +21,15 @@ func NewPrinterState(ctx context.Context, args NewPrinterStateArgs) (*PrinterSta
 	client := octoprint.NewClient(args.Endpoint, args.APIKey)
 	cr := octoprint.ConnectionRequest{}
 
-	resolver := PrinterStateResolver{
-	}
+	resolver := PrinterStateResolver{}
 
 	connectionResult, err := cr.Do(client)
 
-	if(err != nil){
+	if err != nil {
 		fmt.Printf(err.Error())
 		return &PrinterStateResolver{
 			ConnectionState: octoprint.ConnectionState("INVALID"),
-			PrinterState: "INVALID",
+			PrinterState:    "INVALID",
 		}, nil
 	}
 
@@ -42,11 +41,11 @@ func NewPrinterState(ctx context.Context, args NewPrinterStateArgs) (*PrinterSta
 
 	stateResult, err := sr.Do(client)
 
-	if(err != nil){
+	if err != nil {
 		fmt.Printf(err.Error())
 	}
 
-	if(stateResult != nil){
+	if stateResult != nil {
 		resolver.PrinterState = stateResult.State.Text
 	} else {
 		resolver.PrinterState = "OFFLINE"

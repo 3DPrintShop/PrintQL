@@ -3,9 +3,9 @@ package resolver
 import (
 	"context"
 	"fmt"
-	graphql "github.com/graph-gophers/graphql-go"
 	"github.com/3DPrintShop/PrintQL/loader"
 	"github.com/3DPrintShop/PrintQL/printdb"
+	graphql "github.com/graph-gophers/graphql-go"
 )
 
 type PrinterResolver struct {
@@ -21,9 +21,9 @@ type NewPrinterArgs struct {
 }
 
 type Printer struct {
-	Id graphql.ID
-	Alias string
-	APIKey string
+	Id       graphql.ID
+	Alias    string
+	APIKey   string
 	Endpoint string
 }
 
@@ -36,7 +36,7 @@ func NewPrinter(ctx context.Context, args NewPrinterArgs) (*PrinterResolver, err
 
 func NewPrinters(ctx context.Context, args NewPrintersArgs) (*[]*PrinterResolver, error) {
 	if args.ID != nil {
-		printer, err := NewPrinter(ctx, NewPrinterArgs{ ID: *args.ID})
+		printer, err := NewPrinter(ctx, NewPrinterArgs{ID: *args.ID})
 		resolvers := []*PrinterResolver{printer}
 		return &resolvers, err
 	}
@@ -67,7 +67,6 @@ func (r *PrinterResolver) Name() string {
 func (r *PrinterResolver) Endpoint() string {
 	return r.Printer.Endpoint
 }
-
 
 type PrinterFilesQueryArgs struct {
 	Path *string

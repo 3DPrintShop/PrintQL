@@ -3,9 +3,9 @@ package loader
 import (
 	"context"
 	"fmt"
-	"github.com/graph-gophers/dataloader"
 	"github.com/3DPrintShop/PrintQL/errors"
 	"github.com/3DPrintShop/PrintQL/printdb"
+	"github.com/graph-gophers/dataloader"
 	"sync"
 )
 

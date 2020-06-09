@@ -5,9 +5,9 @@ import (
 )
 
 const (
-	TestName     = "Name"
-	TestAPIKey   = "APIKey"
-	TestEndpoint = "EndPoint"
+	TestName          = "Name"
+	TestAPIKey        = "APIKey"
+	TestEndpoint      = "EndPoint"
 	TestComponentType = "STL"
 	TestComponentName = "TestName"
 )

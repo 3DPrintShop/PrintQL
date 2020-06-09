@@ -3,10 +3,10 @@ package handler
 import (
 	"context"
 	"encoding/json"
-	"github.com/boltdb/bolt"
 	"github.com/3DPrintShop/PrintQL/errors"
 	"github.com/3DPrintShop/PrintQL/loader"
 	"github.com/3DPrintShop/PrintQL/printdb"
+	"github.com/boltdb/bolt"
 	"net/http"
 	"sync"
 

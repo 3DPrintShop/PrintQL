@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/boltdb/bolt"
 	"github.com/3DPrintShop/PrintQL/printdb"
+	"github.com/boltdb/bolt"
 	"log"
 	"net/http"
 	"time"
@@ -10,11 +10,11 @@ import (
 	"github.com/graph-gophers/graphql-go"
 	"github.com/smithaitufe/go-graphql-upload"
 
-	"github.com/rs/cors"
 	"github.com/3DPrintShop/PrintQL/handler"
 	"github.com/3DPrintShop/PrintQL/loader"
 	"github.com/3DPrintShop/PrintQL/resolver"
 	"github.com/3DPrintShop/PrintQL/schema"
+	"github.com/rs/cors"
 )
 
 func main() {

@@ -3,9 +3,9 @@ package resolver
 import (
 	"context"
 	"fmt"
-	graphql "github.com/graph-gophers/graphql-go"
 	"github.com/3DPrintShop/PrintQL/loader"
 	"github.com/3DPrintShop/PrintQL/printdb"
+	graphql "github.com/graph-gophers/graphql-go"
 )
 
 type ComponentResolver struct {
@@ -72,7 +72,7 @@ func (r *ComponentResolver) Projects(ctx context.Context) *[]*ProjectResolver {
 	var resolvers []*ProjectResolver
 	fmt.Printf("Attempting to get projects for component %s\n", r.Component.ID)
 	for _, projectID := range r.Component.Projects.ProjectIds {
-		fmt.Printf("Getting componenet %s\n", projectID)
+		fmt.Printf("Getting component %s\n", projectID)
 		project, err := loader.LoadProject(ctx, projectID)
 		if err != nil {
 			fmt.Printf("Failed to load component by id %s\n", projectID)

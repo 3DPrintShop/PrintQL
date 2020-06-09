@@ -3,9 +3,9 @@ package resolver
 import (
 	"context"
 	"fmt"
-	graphql "github.com/graph-gophers/graphql-go"
 	"github.com/3DPrintShop/PrintQL/loader"
 	"github.com/3DPrintShop/PrintQL/printdb"
+	graphql "github.com/graph-gophers/graphql-go"
 )
 
 type ProjectResolver struct {

@@ -2,9 +2,9 @@ package resolver
 
 import (
 	"context"
-	"github.com/graph-gophers/graphql-go"
 	"github.com/3DPrintShop/PrintQL/loader"
 	"github.com/3DPrintShop/PrintQL/printdb"
+	"github.com/graph-gophers/graphql-go"
 )
 
 type MediaResolver struct {

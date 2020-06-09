@@ -2,9 +2,9 @@ package loader
 
 import (
 	"context"
-	"github.com/graph-gophers/dataloader"
 	"github.com/3DPrintShop/PrintQL/errors"
 	"github.com/3DPrintShop/PrintQL/printdb"
+	"github.com/graph-gophers/dataloader"
 	"sync"
 )
 
@@ -58,7 +58,6 @@ func LoadPrinters(ctx context.Context, printerPageID string) ([]printdb.Printer,
 	return printers, nil
 }
 
-
 type printerPageGetter interface {
 	Printers(pageId *string) (printdb.PrinterPage, error)
 }
@@ -90,7 +89,6 @@ func (ldr printerPageLoader) loadBatch(ctx context.Context, pageIDs dataloader.K
 		wg      sync.WaitGroup
 	)
 
-
 	wg.Add(n)
 
 	for i, pageID := range pageIDs {
@@ -113,7 +111,6 @@ func (ldr printerLoader) loadBatch(ctx context.Context, urls dataloader.Keys) []
 		results = make([]*dataloader.Result, n)
 		wg      sync.WaitGroup
 	)
-
 
 	wg.Add(n)
 

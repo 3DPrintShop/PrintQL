@@ -7,10 +7,10 @@ import (
 )
 
 type Printer struct {
-	ID       string   `json:"id"`
-	Alias    string   `json:"alias"`
-	APIKey   string   `json:"apiKey"`
-	Endpoint string   `json:"endpoint"`
+	ID       string `json:"id"`
+	Alias    string `json:"alias"`
+	APIKey   string `json:"apiKey"`
+	Endpoint string `json:"endpoint"`
 }
 
 func (c *Client) Printer(printerId string) (Printer, error) {
@@ -29,9 +29,9 @@ func (c *Client) Printer(printerId string) (Printer, error) {
 		}
 
 		printer = Printer{
-			ID: printerId,
-			Alias: string(pv.Get([]byte(Alias))),
-			APIKey: string(pv.Get([]byte(APIKey))),
+			ID:       printerId,
+			Alias:    string(pv.Get([]byte(Alias))),
+			APIKey:   string(pv.Get([]byte(APIKey))),
 			Endpoint: string(pv.Get([]byte(Endpoint))),
 		}
 
@@ -43,7 +43,7 @@ func (c *Client) Printer(printerId string) (Printer, error) {
 
 type PrinterPage struct {
 	PrinterIds []string
-	NextKey *string
+	NextKey    *string
 }
 
 func (c *Client) Printers(pageId *string) (PrinterPage, error) {
@@ -69,12 +69,12 @@ func (c *Client) Printers(pageId *string) (PrinterPage, error) {
 }
 
 type NewPrinterRequest struct {
-	Name string
-	APIKey string
+	Name     string
+	APIKey   string
 	Endpoint string
 }
 
-func (c *Client) CreatePrinter(request NewPrinterRequest) (string, error){
+func (c *Client) CreatePrinter(request NewPrinterRequest) (string, error) {
 	fmt.Printf("Name: %s, apiKey: %s, endpoint: %s\n", request.Name, request.APIKey, request.Endpoint)
 
 	id := uuid.New()
