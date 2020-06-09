@@ -41,3 +41,16 @@ jobs:
 
     - name: Test
       run: go test -v /home/runner/go/src/github.com/3DPrintShop/PrintQL/...
+
+    - name: CodeCoverage
+      run: go test -coverprofile=coverage.txt -covermode=atomic /home/runner/go/src/github.com/3DPrintShop/PrintQL/...
+      
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        file: ./coverage.txt
+        flags: unittests
+        env_vars: OS,GOLANG
+        name: codecov-umbrella
+        fail_ci_if_error: true   
