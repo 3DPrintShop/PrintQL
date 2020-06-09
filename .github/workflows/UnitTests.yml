@@ -29,12 +29,15 @@ jobs:
             curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
             dep ensure
         fi
-        
+
     - name: InstallBinData
       run: go get -u github.com/go-bindata/go-bindata/...
-        
+
     - name: Generate
       run: go generate ./schema
+
+    - name: CopySourceToGopath
+      run: rm -rf "/github/home/go/src/github.com/3DPrintShop/PrintQL" || true && cp -r . /github/home/go/src/github.com/3DPrintShop/PrintQL
 
     - name: Build
       run: go build -v .
