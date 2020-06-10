@@ -1,4 +1,4 @@
-package printdb
+package printdb_test
 
 import (
 	"github.com/boltdb/bolt"

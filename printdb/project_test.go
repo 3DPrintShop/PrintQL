@@ -1,180 +1,136 @@
-package printdb
+package printdb_test
 
 import (
-	"github.com/boltdb/bolt"
+	"github.com/3DPrintShop/PrintQL/printdb"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
-func TestClient_CreateProject(t *testing.T) {
-	context, err := setup()
-	defer teardown(context)
-
-	if err != nil {
-		t.Error(err)
+func TestClient_TestProjectCreationAndRetrieval(t *testing.T) {
+	type test struct {
+		name             string
+		projectsToCreate int
+		componentsToAdd  int
+		imagesToAdd      int
 	}
 
-	client, err := NewClient(context.db)
-
-	if err != nil {
-		t.Error(err)
-		return
+	tests := []test{
+		{name: "single project no components or images", projectsToCreate: 1, componentsToAdd: 0, imagesToAdd: 0},
+		{name: "3 projects no components or images", projectsToCreate: 3, componentsToAdd: 0, imagesToAdd: 0},
+		{name: "Single project 2 images", projectsToCreate: 1, componentsToAdd: 0, imagesToAdd: 2},
+		{name: "Single project 2 components", projectsToCreate: 1, componentsToAdd: 2, imagesToAdd: 0},
+		{name: "Single Project 2 components 2 images", projectsToCreate: 1, componentsToAdd: 2, imagesToAdd: 2},
+		{name: "3 Projects 2 components 2 images", projectsToCreate: 3, componentsToAdd: 2, imagesToAdd: 2},
 	}
 
-	projectId, err := client.CreateProject(NewProjectRequest{
-		Name: TestName,
-	})
-
-	if err != nil {
-		t.Error(err)
-		return
-	}
-
-	context.db.View(func(tx *bolt.Tx) error {
-		pb := tx.Bucket([]byte(ProjectBucket))
-		if pb == nil {
-			t.Error("Project bucket doesn't sexist within bolt database")
+	for _, test := range tests {
+		context, err := setup()
+		if err != nil {
+			t.Error(err)
 		}
 
-		p := pb.Bucket([]byte(projectId))
-		if p == nil {
-			t.Error("Bucket wasn't created for projectId: " + projectId)
+		client, err := printdb.NewClient(context.db)
+
+		if err != nil {
+			t.Error(err)
+			return
 		}
 
-		pcb := p.Bucket([]byte(ProjectComponentsBucket))
-		if pcb == nil {
-			t.Error()
-		}
+		t.Run(test.name, func(t *testing.T) {
 
-		metadataString := string(p.Get([]byte(Metadata)))
-		if metadataString != "{\"public\":false}" {
-			t.Errorf("Expected metadata to be {}, but was %s", metadataString)
-		}
+			t.Run("Create Project", func(t *testing.T) {
+				for i := 0; i < test.projectsToCreate; i++ {
+					projectID, err := client.CreateProject(printdb.NewProjectRequest{
+						Name: TestName,
+					})
 
-		return nil
-	})
-}
+					if err != nil {
+						t.Error(err)
+						return
+					}
 
-func TestClient_AddComponentToProject(t *testing.T) {
-	context, err := setup()
-	defer teardown(context)
+					if projectID == "" {
+						t.Error("ProjectID was returned as an empty string.")
+					}
+					t.Run("Add images to project", func(t *testing.T) {
+						for x := 0; x < test.imagesToAdd; x++ {
+							altText := string(x)
 
-	if err != nil {
-		t.Error(err)
-	}
+							imageId, err := client.CreateImage(printdb.NewImageRequest{
+								Type:    ".png",
+								AltText: &altText,
+							})
 
-	client, err := NewClient(context.db)
+							if err != nil {
+								t.Error(err)
+							}
 
-	if err != nil {
-		t.Error(err)
-		return
-	}
+							err = client.AssociateImageWithProject(printdb.AssociateImageWithProjectRequest{ProjectId: projectID, ImageId: imageId, Type: ".png"})
+							if err != nil {
+								t.Error(err)
+							}
+						}
+					})
 
-	projectId, err := client.CreateProject(NewProjectRequest{
-		Name: TestName,
-	})
+					t.Run("Add components to project", func(t *testing.T) {
+						for x := 0; x < test.componentsToAdd; x++ {
+							componentId, err := client.CreateComponent(printdb.NewComponentRequest{
+								Type: "STL",
+								Name: string(x),
+							})
 
-	if err != nil {
-		t.Error(err)
-		return
-	}
+							if err != nil {
+								t.Error(err)
+								continue
+							}
 
-	componentId, err := client.CreateComponent(NewComponentRequest{
-		Name: TestComponentName,
-		Type: TestComponentType,
-	})
+							err = client.AssociateComponentWithProject(printdb.AssociateComponentWithProjectRequest{
+								ProjectId:   projectID,
+								ComponentId: componentId,
+							})
 
-	err = client.AssociateComponentWithProject(AssociateComponentWithProjectRequest{
-		ComponentId: componentId,
-		ProjectId:   projectId,
-	})
+							if err != nil {
+								t.Error(err)
+							}
+						}
+					})
+				}
+			})
 
-	if err != nil {
-		t.Error(err)
-	}
+			t.Run("Get Projects", func(t *testing.T) {
+				projectPage, err := client.Projects(nil)
 
-	context.db.View(func(tx *bolt.Tx) error {
-		pb := tx.Bucket([]byte(ProjectBucket))
-		if pb == nil {
-			t.Error("Project bucket doesn't sexist within bolt database")
-		}
+				if err != nil {
+					t.Error(err)
+				}
 
-		p := pb.Bucket([]byte(projectId))
-		if p == nil {
-			t.Error("Bucket wasn't created for projectId: " + projectId)
-		}
+				assert.Equal(t, len(projectPage.ProjectIds), test.projectsToCreate)
+				assert.Nil(t, projectPage.NextKey)
 
-		pcb := p.Bucket([]byte(ProjectComponentsBucket))
-		if pcb == nil {
-			t.Error()
-		}
+			})
 
-		value := string(pcb.Get([]byte(componentId)))
+			t.Run("Get Each Project", func(t *testing.T) {
+				projectPage, err := client.Projects(nil)
 
-		if value != "{}" {
-			t.Error("Failed to retrieve component association from expected bucket")
-		}
+				if err != nil {
+					t.Error(err)
+				}
 
-		return nil
-	})
-}
+				for _, projectID := range projectPage.ProjectIds {
+					project, err := client.Project(projectID)
 
-func TestClient_GetProject(t *testing.T) {
-	context, err := setup()
-	defer teardown(context)
+					if err != nil {
+						t.Error(err)
+					}
 
-	if err != nil {
-		t.Error(err)
-	}
-
-	client, err := NewClient(context.db)
-
-	if err != nil {
-		t.Error(err)
-		return
-	}
-
-	projectId, err := client.CreateProject(NewProjectRequest{
-		Name: TestName,
-	})
-
-	if err != nil {
-		t.Error(err)
-		return
-	}
-
-	compId, err := client.CreateComponent(NewComponentRequest{
-		Type: "STL",
-		Name: "Component!",
-	})
-
-	err = client.AssociateComponentWithProject(AssociateComponentWithProjectRequest{
-		ComponentId: compId,
-		ProjectId:   projectId,
-	})
-
-	if err != nil {
-		t.Error(err)
-	}
-
-	project, err := client.Project(projectId)
-
-	if err != nil {
-		t.Error(err)
-	}
-
-	if project.ID != projectId {
-		t.Error("Project id doesn't match id passed in")
-	}
-
-	if project.Metadata.Public != false {
-		t.Error("default public state not set on creation")
-	}
-
-	if project.Name != TestName {
-		t.Errorf("Name was incorrectly set to: %s", project.Name)
-	}
-
-	if len(project.Components.ComponentIds) != 1 {
-		t.Errorf("Wrong number of components returned expected 1, got %d", len(project.Components.ComponentIds))
+					assert.Equal(t, project.ID, projectID)
+					assert.Equal(t, project.Name, TestName)
+					assert.Equal(t, project.Metadata.Public, false)
+					assert.Equal(t, len(project.Images.MediaIds), test.imagesToAdd)
+					assert.Equal(t, len(project.Components.ComponentIds), test.componentsToAdd)
+				}
+			})
+		})
+		teardown(context)
 	}
 }

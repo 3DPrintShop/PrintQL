@@ -89,7 +89,7 @@ func (c *Client) CreateComponent(request NewComponentRequest) (string, error) {
 			return err
 		}
 
-		_, err = b.CreateBucket([]byte(ComponentProjectBucket))
+		_, err = cb.CreateBucket([]byte(ComponentProjectBucket))
 
 		if err != nil {
 			fmt.Printf("Error creating component project's bucket")

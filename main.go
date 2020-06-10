@@ -32,9 +32,15 @@ func main() {
 	root, err := resolver.NewRoot()
 	if err != nil {
 		log.Fatal(err)
+		return
 	}
 
 	db, err := bolt.Open("my.db", 0600, nil)
+
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
 
 	printClient, err := printdb.NewClient(db)
 	h := handler.GraphQL{
