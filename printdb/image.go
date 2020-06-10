@@ -40,6 +40,33 @@ func (c *Client) Image(componentId string) (Image, error) {
 	return image, err
 }
 
+type ImagePage struct {
+	ImageIDs []string
+	nextKey  *string
+}
+
+func (c *Client) GetImages(pageId *string) (ImagePage, error) {
+
+	var imageIDs []string
+
+	err := c.db.Update(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte(ImageBucket))
+		c := b.Cursor()
+
+		if pageId != nil {
+			c.Seek([]byte(*pageId))
+		}
+
+		for k, _ := c.First(); k != nil; k, _ = c.Next() {
+			imageIDs = append(imageIDs, string(k))
+		}
+
+		return nil
+	})
+
+	return ImagePage{ImageIDs: imageIDs, nextKey: nil}, err
+}
+
 type NewImageRequest struct {
 	AltText *string
 	Type    string

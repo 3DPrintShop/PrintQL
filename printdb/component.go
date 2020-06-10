@@ -41,6 +41,7 @@ func (c *Client) Component(componentId string) (Component, error) {
 		component = Component{
 			ID:   componentId,
 			Name: string(pv.Get([]byte(Name))),
+			Type: string(pv.Get([]byte(Type))),
 		}
 
 		return nil

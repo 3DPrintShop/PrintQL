@@ -12,6 +12,7 @@ const (
 	TestEndpoint      = "EndPoint"
 	TestComponentType = "STL"
 	TestComponentName = "TestName"
+	TestAltText       = "AltText"
 )
 
 func TestClient_TestPrinterCreationAndRetrieval(t *testing.T) {
