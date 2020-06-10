@@ -56,7 +56,7 @@ type CreateProjectQueryArgs struct {
 func (r SchemaResolver) CreateProject(ctx context.Context, args CreateProjectQueryArgs) (*ProjectResolver, error) {
 	client := ctx.Value("client").(*printdb.Client)
 
-	projectId, err := client.CreateProject(printdb.NewProjectRequest{Name: args.Name})
+	projectId, err := client.CreateProject(args.Name)
 
 	if err != nil {
 		return nil, err
@@ -76,7 +76,7 @@ func (r SchemaResolver) UploadComponent(ctx context.Context, args uploadComponen
 	client := ctx.Value("client").(*printdb.Client)
 
 	componentId, err := client.CreateComponent(printdb.NewComponentRequest{Name: args.Component.FileName})
-	client.AssociateComponentWithProject(printdb.AssociateComponentWithProjectRequest{ProjectId: string(args.ProjectID), ComponentId: componentId})
+	client.AssociateComponentWithProject(string(args.ProjectID), componentId)
 
 	rd, err := args.Component.CreateReadStream()
 	if err != nil {

@@ -40,9 +40,7 @@ func TestClient_TestProjectCreationAndRetrieval(t *testing.T) {
 
 			t.Run("Create Project", func(t *testing.T) {
 				for i := 0; i < test.projectsToCreate; i++ {
-					projectID, err := client.CreateProject(printdb.NewProjectRequest{
-						Name: TestName,
-					})
+					projectID, err := client.CreateProject(TestName)
 
 					if err != nil {
 						t.Error(err)
@@ -65,7 +63,7 @@ func TestClient_TestProjectCreationAndRetrieval(t *testing.T) {
 								t.Error(err)
 							}
 
-							err = client.AssociateImageWithProject(printdb.AssociateImageWithProjectRequest{ProjectId: projectID, ImageId: imageId, Type: ".png"})
+							err = client.AssociateImageWithProject(printdb.AssociateImageWithProjectRequest{ProjectID: projectID, ImageID: imageId, Type: ".png"})
 							if err != nil {
 								t.Error(err)
 							}
@@ -84,10 +82,7 @@ func TestClient_TestProjectCreationAndRetrieval(t *testing.T) {
 								continue
 							}
 
-							err = client.AssociateComponentWithProject(printdb.AssociateComponentWithProjectRequest{
-								ProjectId:   projectID,
-								ComponentId: componentId,
-							})
+							err = client.AssociateComponentWithProject(projectID, componentId)
 
 							if err != nil {
 								t.Error(err)
@@ -98,26 +93,25 @@ func TestClient_TestProjectCreationAndRetrieval(t *testing.T) {
 			})
 
 			t.Run("Get Projects", func(t *testing.T) {
-				projectPage, err := client.Projects(nil)
+				projectPage, err := client.GetProjects(nil)
 
 				if err != nil {
 					t.Error(err)
 				}
 
-				assert.Equal(t, len(projectPage.ProjectIds), test.projectsToCreate)
-				assert.Nil(t, projectPage.NextKey)
+				assert.Equal(t, len(projectPage.ProjectIDs), test.projectsToCreate)
 
 			})
 
 			t.Run("Get Each Project", func(t *testing.T) {
-				projectPage, err := client.Projects(nil)
+				projectPage, err := client.GetProjects(nil)
 
 				if err != nil {
 					t.Error(err)
 				}
 
-				for _, projectID := range projectPage.ProjectIds {
-					project, err := client.Project(projectID)
+				for _, projectID := range projectPage.ProjectIDs {
+					project, err := client.GetProject(projectID)
 
 					if err != nil {
 						t.Error(err)

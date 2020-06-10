@@ -7,22 +7,28 @@ import (
 	"github.com/google/uuid"
 )
 
+// ProjectMetadata describes traits about a project.
 type ProjectMetadata struct {
 	Public bool `json:"public"`
 }
 
+// ProjectComponentPage is a paginated list of component IDs for a project.
 type ProjectComponentPage struct {
-	ProjectId    string
-	NextPage     *string
+	projectID string
+	nextPage  *string
+	// Ids of the components
 	ComponentIds []string
 }
 
+// ProjectMediaPage is a list of media ids for a project.
 type ProjectMediaPage struct {
-	ProjectId string
-	NextPage  *string
-	MediaIds  []string
+	projectID string
+	nextPage  *string
+	// The IDs of the media for a project
+	MediaIds []string
 }
 
+// A Project is a set of data that describes something you can make.
 type Project struct {
 	ID         string
 	Name       string
@@ -31,7 +37,8 @@ type Project struct {
 	Images     ProjectMediaPage
 }
 
-func (c *Client) Project(projectId string) (Project, error) {
+// GetProject retrieves a project based on it's ID.
+func (c *Client) GetProject(projectID string) (Project, error) {
 	var project Project
 
 	err := c.db.View(func(tx *bolt.Tx) error {
@@ -39,7 +46,7 @@ func (c *Client) Project(projectId string) (Project, error) {
 		if b == nil {
 			return fmt.Errorf("database not setup")
 		}
-		pv := b.Bucket([]byte(projectId))
+		pv := b.Bucket([]byte(projectID))
 
 		if pv == nil {
 			return fmt.Errorf("project by that id does not exist")
@@ -58,7 +65,7 @@ func (c *Client) Project(projectId string) (Project, error) {
 		}
 
 		project = Project{
-			ID:       projectId,
+			ID:       projectID,
 			Name:     string(pv.Get([]byte(Name))),
 			Metadata: metadata,
 		}
@@ -70,28 +77,31 @@ func (c *Client) Project(projectId string) (Project, error) {
 		return project, err
 	}
 
-	components, err := c.GetComponentsForProject(projectId)
+	components, err := c.GetComponentsForProject(projectID)
 	project.Components = components
-	images, err := c.GetImagesForProject(projectId)
+	images, err := c.GetImagesForProject(projectID)
 	project.Images = images
 
 	return project, err
 }
 
+// A ProjectPage is a list of project IDs as well as the structure needed to retrieve the next page.
 type ProjectPage struct {
-	ProjectIds []string
-	NextKey    *string
+	// The list of project ids.
+	ProjectIDs []string
+	nextKey    *string
 }
 
-func (c *Client) Projects(pageId *string) (ProjectPage, error) {
+// GetProjects retrieves a paginated list of project IDs.
+func (c *Client) GetProjects(pageID *string) (ProjectPage, error) {
 	var projectIds []string
 
 	err := c.db.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(ProjectBucket))
 		c := b.Cursor()
 
-		if pageId != nil {
-			c.Seek([]byte(*pageId))
+		if pageID != nil {
+			c.Seek([]byte(*pageID))
 		}
 
 		for k, _ := c.First(); k != nil; k, _ = c.Next() {
@@ -102,25 +112,23 @@ func (c *Client) Projects(pageId *string) (ProjectPage, error) {
 		return nil
 	})
 
-	return ProjectPage{ProjectIds: projectIds, NextKey: nil}, err
+	return ProjectPage{ProjectIDs: projectIds, nextKey: nil}, err
 }
 
-type NewProjectRequest struct {
-	Name string
-}
-
+// GetImagesForProject retrieves a paginated list of images for a project.
 func (c *Client) GetImagesForProject(projectID string) (ProjectMediaPage, error) {
 	return c.GetNextProjectImagePage(ProjectMediaPage{
-		ProjectId: projectID,
+		projectID: projectID,
 	})
 }
 
+// GetNextProjectImagePage retrieves the next page of image IDs for a project.
 func (c *Client) GetNextProjectImagePage(request ProjectMediaPage) (ProjectMediaPage, error) {
 	var mediaIDs []string
 
 	err := c.db.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(ProjectBucket))
-		pb := b.Bucket([]byte(request.ProjectId))
+		pb := b.Bucket([]byte(request.projectID))
 		pcb := pb.Bucket([]byte(ProjectImagesBucket))
 
 		if pcb == nil {
@@ -130,8 +138,8 @@ func (c *Client) GetNextProjectImagePage(request ProjectMediaPage) (ProjectMedia
 
 		c := pcb.Cursor()
 
-		if request.NextPage != nil {
-			c.Seek([]byte(*request.NextPage))
+		if request.nextPage != nil {
+			c.Seek([]byte(*request.nextPage))
 		}
 
 		for k, _ := c.First(); k != nil; k, _ = c.Next() {
@@ -143,32 +151,29 @@ func (c *Client) GetNextProjectImagePage(request ProjectMediaPage) (ProjectMedia
 		return nil
 	})
 
-	return ProjectMediaPage{MediaIds: mediaIDs, NextPage: nil}, err
+	return ProjectMediaPage{MediaIds: mediaIDs, nextPage: nil}, err
 }
 
-func (c *Client) GetComponentsForProject(projectId string) (ProjectComponentPage, error) {
+// GetComponentsForProject retrieves a paginated list of component IDs for a project.
+func (c *Client) GetComponentsForProject(projectID string) (ProjectComponentPage, error) {
 	return c.GetNextProjectComponentPage(ProjectComponentPage{
-		ProjectId: projectId,
+		projectID: projectID,
 	})
 }
 
+// GetNextProjectComponentPage gets the next page of component ids for a project.
 func (c *Client) GetNextProjectComponentPage(request ProjectComponentPage) (ProjectComponentPage, error) {
 	var componentIds []string
 
 	err := c.db.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(ProjectBucket))
-		pb := b.Bucket([]byte(request.ProjectId))
+		pb := b.Bucket([]byte(request.projectID))
 		pcb := pb.Bucket([]byte(ProjectComponentsBucket))
-
-		if pcb == nil {
-			fmt.Printf("Failed to get pcb for project")
-			return nil
-		}
 
 		c := pcb.Cursor()
 
-		if request.NextPage != nil {
-			c.Seek([]byte(*request.NextPage))
+		if request.nextPage != nil {
+			c.Seek([]byte(*request.nextPage))
 		}
 
 		for k, _ := c.First(); k != nil; k, _ = c.Next() {
@@ -179,10 +184,11 @@ func (c *Client) GetNextProjectComponentPage(request ProjectComponentPage) (Proj
 		return nil
 	})
 
-	return ProjectComponentPage{ComponentIds: componentIds, NextPage: nil}, err
+	return ProjectComponentPage{ComponentIds: componentIds, nextPage: nil}, err
 }
 
-func (c *Client) CreateProject(request NewProjectRequest) (string, error) {
+// CreateProject creates a new project and saves it returning an ID to that project.
+func (c *Client) CreateProject(projectName string) (string, error) {
 	id := uuid.New()
 	defaultProjectMetadata := ProjectMetadata{
 		Public: false,
@@ -206,45 +212,42 @@ func (c *Client) CreateProject(request NewProjectRequest) (string, error) {
 			return fmt.Errorf("Failed to create bucket: " + ProjectComponentsBucket)
 		}
 
-		pb.Put([]byte(Name), []byte(request.Name))
-		json, err := json.Marshal(defaultProjectMetadata)
-		return pb.Put([]byte(Metadata), json)
+		err = pb.Put([]byte(Name), []byte(projectName))
+
+		if err != nil {
+			return err
+		}
+
+		jsonString, err := json.Marshal(defaultProjectMetadata)
+
+		if err != nil {
+			return err
+		}
+
+		return pb.Put([]byte(Metadata), jsonString)
 	})
 
 	return id.String(), err
 }
 
-type AssociateComponentWithProjectRequest struct {
-	ProjectId   string
-	ComponentId string
-}
-
-func (c *Client) AssociateComponentWithProject(request AssociateComponentWithProjectRequest) error {
-	fmt.Printf("Creating association for %s and %s\n", request.ProjectId, request.ComponentId)
+// AssociateComponentWithProject associates a component with a project.
+func (c *Client) AssociateComponentWithProject(projectID string, componentID string) error {
 	err := c.db.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(ProjectBucket))
-		pb := b.Bucket([]byte(request.ProjectId))
+		pb := b.Bucket([]byte(projectID))
 		pc := pb.Bucket([]byte(ProjectComponentsBucket))
 
-		if pc == nil {
-			pc, _ = pb.CreateBucket([]byte(ProjectComponentsBucket))
-		}
-
-		err := pc.Put([]byte(request.ComponentId), []byte("{}"))
+		err := pc.Put([]byte(componentID), []byte("{}"))
 
 		if err != nil {
 			return err
 		}
 
 		b = tx.Bucket([]byte(ComponentBucket))
-		cb := b.Bucket([]byte(request.ComponentId))
+		cb := b.Bucket([]byte(componentID))
 		cp := cb.Bucket([]byte(ComponentProjectBucket))
 
-		if cp == nil {
-			cp, _ = cb.CreateBucket([]byte(ComponentProjectBucket))
-		}
-
-		err = cp.Put([]byte(request.ProjectId), []byte("{}"))
+		err = cp.Put([]byte(projectID), []byte("{}"))
 
 		return err
 	})
@@ -252,24 +255,29 @@ func (c *Client) AssociateComponentWithProject(request AssociateComponentWithPro
 	return err
 }
 
+// AssociateImageWithProjectRequest is the data needed to associate an image with a project.
 type AssociateImageWithProjectRequest struct {
-	ProjectId string
-	ImageId   string
-	Type      string
+	// ProjectID is the id for the project to be associated to
+	ProjectID string
+	// ImageID is the id of the image being associated
+	ImageID string
+	// Type is the type stored with the relationship so they can be filtered for use in things like galleries vs the card.
+	Type string
 }
 
+// AssociateImageWithProject associates an image with a project.
 func (c *Client) AssociateImageWithProject(request AssociateImageWithProjectRequest) error {
-	fmt.Printf("Creating association for %s and image %s\n", request.ProjectId, request.ImageId)
+	fmt.Printf("Creating association for %s and image %s\n", request.ProjectID, request.ImageID)
 	err := c.db.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(ProjectBucket))
-		pb := b.Bucket([]byte(request.ProjectId))
+		pb := b.Bucket([]byte(request.ProjectID))
 		pc := pb.Bucket([]byte(ProjectImagesBucket))
 
 		if pc == nil {
 			pc, _ = pb.CreateBucket([]byte(ProjectImagesBucket))
 		}
 
-		err := pc.Put([]byte(request.ImageId), []byte(request.Type))
+		err := pc.Put([]byte(request.ImageID), []byte(request.Type))
 		return err
 	})
 

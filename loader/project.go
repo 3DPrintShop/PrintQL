@@ -47,7 +47,7 @@ func LoadProjects(ctx context.Context, projectPageID string) ([]printdb.Project,
 		return projects, errors.WrongType(projectPage, data)
 	}
 
-	for _, v := range projectPage.ProjectIds {
+	for _, v := range projectPage.ProjectIDs {
 		project, err := LoadProject(ctx, v)
 		if err != nil {
 			return projects, err
@@ -59,11 +59,11 @@ func LoadProjects(ctx context.Context, projectPageID string) ([]printdb.Project,
 }
 
 type projectPageGetter interface {
-	Projects(pageId *string) (printdb.ProjectPage, error)
+	GetProjects(pageId *string) (printdb.ProjectPage, error)
 }
 
 type projectGetter interface {
-	Project(projectId string) (printdb.Project, error)
+	GetProject(projectId string) (printdb.Project, error)
 }
 
 type projectPageLoader struct {
@@ -96,7 +96,7 @@ func (ldr projectPageLoader) loadBatch(ctx context.Context, pageIDs dataloader.K
 			defer wg.Done()
 
 			idString := pageID.String()
-			data, err := ldr.get.Projects(&idString)
+			data, err := ldr.get.GetProjects(&idString)
 			results[i] = &dataloader.Result{Data: data, Error: err}
 		}(i, pageID)
 	}
@@ -119,7 +119,7 @@ func (ldr projectLoader) loadBatch(ctx context.Context, urls dataloader.Keys) []
 		go func(i int, url dataloader.Key) {
 			defer wg.Done()
 
-			data, err := ldr.get.Project(url.String())
+			data, err := ldr.get.GetProject(url.String())
 			results[i] = &dataloader.Result{Data: data, Error: err}
 		}(i, url)
 	}
