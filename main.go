@@ -43,6 +43,11 @@ func main() {
 	}
 
 	printClient, err := printdb.NewClient(db)
+
+	if err != nil {
+		return
+	}
+
 	h := handler.GraphQL{
 		Schema:  graphql.MustParseSchema(schema.String(), root),
 		Loaders: loader.Initialize(printClient),

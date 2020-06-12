@@ -47,6 +47,10 @@ func (c *Client) Component(componentId string) (Component, error) {
 		return nil
 	})
 
+	if err != nil {
+		return component, err
+	}
+
 	projects, err := c.GetProjectsForComponent(componentId)
 	component.Projects = projects
 

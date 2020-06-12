@@ -70,7 +70,7 @@ func (r *ProjectResolver) Components(ctx context.Context) *[]*ComponentResolver 
 	var resolvers []*ComponentResolver
 	fmt.Printf("Attempting to get components for project %s\n", r.Project.ID)
 	for _, componetId := range r.Project.Components.ComponentIds {
-		fmt.Printf("Getting componenet %s\n", componetId)
+		fmt.Printf("Getting component %s\n", componetId)
 		component, err := loader.LoadComponent(ctx, componetId)
 		if err != nil {
 			fmt.Printf("Failed to load component by id %s\n", componetId)

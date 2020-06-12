@@ -42,7 +42,7 @@ func TestClient_TestImageCreationAndRetrieval(t *testing.T) {
 				}
 			})
 
-			t.Run("Get Components", func(t *testing.T) {
+			t.Run("Get Images", func(t *testing.T) {
 				imagePage, err := client.GetImages(nil)
 
 				if err != nil {
@@ -52,7 +52,7 @@ func TestClient_TestImageCreationAndRetrieval(t *testing.T) {
 				assert.Equal(t, test.imagesToCreate, len(imagePage.ImageIDs))
 			})
 
-			t.Run("Get Each Printer", func(t *testing.T) {
+			t.Run("Get Each Image", func(t *testing.T) {
 				imagePage, err := client.GetImages(nil)
 
 				if err != nil {

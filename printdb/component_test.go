@@ -51,7 +51,7 @@ func TestClient_TestComponentCreationAndRetrieval(t *testing.T) {
 				assert.Equal(t, test.componentsToCreate, len(componentPage.ComponentIds))
 			})
 
-			t.Run("Get Each Printer", func(t *testing.T) {
+			t.Run("Get Each Component", func(t *testing.T) {
 				componentPage, err := client.Components(nil)
 
 				if err != nil {

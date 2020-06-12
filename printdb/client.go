@@ -1,6 +1,7 @@
 package printdb
 
 import (
+	"encoding/binary"
 	"github.com/boltdb/bolt"
 )
 
@@ -25,6 +26,11 @@ const (
 
 	ImageBucket = "Media"
 	AltText     = "AltText"
+
+	FilamentBrandBucket = "FilamentBrand"
+	StartingWeight      = "StartingWeight"
+
+	FilamentSpoolBucket = "FilamentSpool"
 )
 
 type Client struct {
@@ -53,6 +59,27 @@ func insureBuckets(db *bolt.DB) error {
 		if err != nil {
 			return err
 		}
+		_, err = tx.CreateBucketIfNotExists([]byte(FilamentBrandBucket))
+		if err != nil {
+			return err
+		}
+		_, err = tx.CreateBucketIfNotExists([]byte(FilamentSpoolBucket))
+		if err != nil {
+			return err
+		}
 		return nil
 	})
+}
+
+func itob(v int) []byte {
+	b := make([]byte, 8)
+	binary.BigEndian.PutUint64(b, uint64(v))
+	return b
+}
+
+func btoi(b []byte) int {
+	if b == nil {
+		return 0
+	}
+	return int(binary.BigEndian.Uint64(b))
 }

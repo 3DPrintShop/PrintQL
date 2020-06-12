@@ -78,6 +78,11 @@ func (c *Client) GetProject(projectID string) (Project, error) {
 	}
 
 	components, err := c.GetComponentsForProject(projectID)
+
+	if err != nil {
+		return project, err
+	}
+
 	project.Components = components
 	images, err := c.GetImagesForProject(projectID)
 	project.Images = images
