@@ -1,0 +1,13 @@
+# A brand and type of filament
+type FilamentBrand {
+    # The filament brand's id
+    id: ID!
+    # The name of the filament brand
+    name: String!
+    # A URL to purchase the filament
+    purchaseLink: String
+    # The weight of the filament and spool when it's new
+    startWeight: Int
+    # The weight of the spool the filament comes on
+    spoolWeight: Int
+}

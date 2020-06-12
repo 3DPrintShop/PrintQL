@@ -6,17 +6,19 @@ import (
 	"github.com/vitiock/go-octoprint"
 )
 
-// FilmResolver resolves the Film type.
+// PrinterStateResolver resolves the PrinterState type.
 type PrinterStateResolver struct {
 	ConnectionState octoprint.ConnectionState
 	PrinterState    string
 }
 
+// NewPrinterStateArgs is a structure that represents the needed variables to access a printer's state.
 type NewPrinterStateArgs struct {
 	APIKey   string
 	Endpoint string
 }
 
+// NewPrinterState returns a resolver that can be used to access the state of a printer using Octoprint with the specified api key and endpoint.
 func NewPrinterState(ctx context.Context, args NewPrinterStateArgs) (*PrinterStateResolver, error) {
 	client := octoprint.NewClient(args.Endpoint, args.APIKey)
 	cr := octoprint.ConnectionRequest{}
@@ -54,11 +56,12 @@ func NewPrinterState(ctx context.Context, args NewPrinterStateArgs) (*PrinterSta
 	return &resolver, nil
 }
 
-// ID resolves the film's unique identifier.
+// Connection resolves the current connection state of the printer.
 func (r *PrinterStateResolver) Connection() string {
 	return string(r.ConnectionState)
 }
 
+// State resolves the current state of the printer.
 func (r *PrinterStateResolver) State() string {
 	return r.PrinterState
 }

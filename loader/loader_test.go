@@ -1,12 +1,9 @@
-package resolver
+package loader
 
 import (
 	"context"
-	"github.com/3DPrintShop/PrintQL/schema"
 	"github.com/graph-gophers/dataloader"
-	"github.com/graph-gophers/graphql-go"
 	"net/http"
-	"testing"
 )
 
 func setup(loaderId key, loader dataloader.BatchFunc) (context.Context, error) {
@@ -19,12 +16,4 @@ func setup(loaderId key, loader dataloader.BatchFunc) (context.Context, error) {
 	ctx = context.WithValue(ctx, loaderId, dataloader.NewBatchedLoader(loader))
 
 	return ctx, nil
-}
-
-func TestResolversSatisfySchema(t *testing.T) {
-	rootResolver := &SchemaResolver{}
-	_, err := graphql.ParseSchema(schema.String(), rootResolver)
-	if err != nil {
-		t.Error(err)
-	}
 }

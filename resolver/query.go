@@ -45,6 +45,19 @@ func (r SchemaResolver) Components(ctx context.Context, args ComponentsQueryArgs
 	return NewComponents(ctx, NewComponentsArgs{ID: nil})
 }
 
+type FilamentBrandQueryArgs struct {
+	ID *graphql.ID
+}
+
+func (r SchemaResolver) FilamentBrands(ctx context.Context, args FilamentBrandQueryArgs) (*[]*FilamentBrandResolver, error) {
+	if args.ID != nil {
+		fmt.Println("ID passed into components")
+		id := string(*args.ID)
+		return NewFilamentBrands(ctx, NewFilamentBrandsArgs{ID: &id})
+	}
+	return NewFilamentBrands(ctx, NewFilamentBrandsArgs{ID: nil})
+}
+
 func (r SchemaResolver) Self(ctx context.Context) (*AccountResolver, error) {
 	return NewAccount(ctx)
 }

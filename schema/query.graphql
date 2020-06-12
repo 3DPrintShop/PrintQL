@@ -6,6 +6,8 @@ type Query {
   projects(id: ID): [Project!]
   # List out components
   components(id: ID): [Component!]
+  # List out filament brands
+  filamentBrands(id: ID): [FilamentBrand!]
   #The user
   self: Account
 }

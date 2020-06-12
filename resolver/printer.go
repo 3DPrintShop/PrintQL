@@ -8,18 +8,22 @@ import (
 	graphql "github.com/graph-gophers/graphql-go"
 )
 
+// PrinterResolver resolves the Printer type.
 type PrinterResolver struct {
 	Printer printdb.Printer
 }
 
+// NewPrintersArgs represent the arguments passed into the Printers query.
 type NewPrintersArgs struct {
 	ID *string
 }
 
+// NewPrinterArgs represent the required arguments needed to create a PrinterResolver.
 type NewPrinterArgs struct {
 	ID string
 }
 
+// Printer is a representation of a 3DPrinter.
 type Printer struct {
 	Id       graphql.ID
 	Alias    string
@@ -27,6 +31,7 @@ type Printer struct {
 	Endpoint string
 }
 
+// NewPrinter creates a new PrinterResolver.
 func NewPrinter(ctx context.Context, args NewPrinterArgs) (*PrinterResolver, error) {
 	fmt.Printf("Printer request: %s\n", args.ID)
 	printer, errs := loader.LoadPrinter(ctx, args.ID)

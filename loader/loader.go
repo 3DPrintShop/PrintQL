@@ -9,13 +9,16 @@ import (
 type key string
 
 const (
-	printerLoaderKey       key = "printer"
-	printerPageLoaderKey   key = "printerPage"
-	projectLoaderKey       key = "project"
-	projectPageLoaderKey   key = "projectPage"
-	componentLoaderKey     key = "component"
-	componentPageLoaderKey key = "componentPage"
-	mediaLoaderKey         key = "media"
+	printerLoaderKey        key = "printer"
+	printerPageLoaderKey    key = "printerPage"
+	projectLoaderKey        key = "project"
+	projectPageLoaderKey    key = "projectPage"
+	componentLoaderKey      key = "component"
+	componentPageLoaderKey  key = "componentPage"
+	mediaLoaderKey          key = "media"
+	filamentBrandLoaderKey  key = "filamentBrand"
+	filamentBrandsLoaderKey key = "filamentBrands"
+	filamentSpoolLoaderKey  key = "filamentSpool"
 )
 
 type Client interface {
@@ -26,18 +29,22 @@ type Client interface {
 	componentGetter
 	componentPageGetter
 	mediaGetter
+	filamentBrandGetter
+	filamentBrandsGetter
 }
 
 func Initialize(boltClient Client) Collection {
 	return Collection{
 		lookup: map[key]dataloader.BatchFunc{
-			printerLoaderKey:       newPrinterLoader(boltClient),
-			printerPageLoaderKey:   newPrinterPageLoader(boltClient),
-			projectLoaderKey:       newProjectLoader(boltClient),
-			projectPageLoaderKey:   newProjectPageLoader(boltClient),
-			componentLoaderKey:     newComponentLoader(boltClient),
-			componentPageLoaderKey: newComponentPageLoader(boltClient),
-			mediaLoaderKey:         newMediaLoader(boltClient),
+			printerLoaderKey:        newPrinterLoader(boltClient),
+			printerPageLoaderKey:    newPrinterPageLoader(boltClient),
+			projectLoaderKey:        newProjectLoader(boltClient),
+			projectPageLoaderKey:    newProjectPageLoader(boltClient),
+			componentLoaderKey:      newComponentLoader(boltClient),
+			componentPageLoaderKey:  newComponentPageLoader(boltClient),
+			mediaLoaderKey:          newMediaLoader(boltClient),
+			filamentBrandLoaderKey:  newFilamentBrandLoader(boltClient),
+			filamentBrandsLoaderKey: newFilamentBrandsLoader(boltClient),
 		},
 	}
 }

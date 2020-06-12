@@ -29,8 +29,11 @@ const (
 
 	FilamentBrandBucket = "FilamentBrand"
 	StartingWeight      = "StartingWeight"
+	PurchaseLink        = "PurchaseLink"
 
 	FilamentSpoolBucket = "FilamentSpool"
+	BrandID             = "BrandID"
+	RemainingWeight     = "RemainingWeight"
 )
 
 type Client struct {
@@ -71,15 +74,15 @@ func insureBuckets(db *bolt.DB) error {
 	})
 }
 
-func itob(v int) []byte {
+func itob(v int32) []byte {
 	b := make([]byte, 8)
 	binary.BigEndian.PutUint64(b, uint64(v))
 	return b
 }
 
-func btoi(b []byte) int {
+func btoi(b []byte) int32 {
 	if b == nil {
 		return 0
 	}
-	return int(binary.BigEndian.Uint64(b))
+	return int32(binary.BigEndian.Uint64(b))
 }
