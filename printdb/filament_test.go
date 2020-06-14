@@ -62,7 +62,7 @@ func TestClient_TestFilamentBrand(t *testing.T) {
 					t.Error(err)
 				}
 
-				assert.Equal(t, test.brandsToCreate, len(filamentBrandPage.FilamentBrandIDs))
+				assert.Equal(t, test.brandsToCreate, len(filamentBrandPage.IDs))
 			})
 
 			t.Run("Get Each Filament Brand", func(t *testing.T) {
@@ -72,7 +72,7 @@ func TestClient_TestFilamentBrand(t *testing.T) {
 					t.Error(err)
 				}
 
-				for _, filamentID := range filamentBrandPage.FilamentBrandIDs {
+				for _, filamentID := range filamentBrandPage.IDs {
 					filament, err := client.GetFilamentBrand(filamentID)
 
 					if err != nil {
@@ -153,7 +153,7 @@ func TestClient_TestFilamentSpool(t *testing.T) {
 					t.Error(err)
 				}
 
-				assert.Equal(t, test.spoolsPerBrand*test.brandsToCreate, len(filamentSpoolPage.FilamentSpoolIDs))
+				assert.Equal(t, test.spoolsPerBrand*test.brandsToCreate, len(filamentSpoolPage.IDs))
 			})
 
 			t.Run("Get Each Spool", func(t *testing.T) {
@@ -163,7 +163,7 @@ func TestClient_TestFilamentSpool(t *testing.T) {
 					t.Error(err)
 				}
 
-				for _, filamentID := range filamentSpoolPage.FilamentSpoolIDs {
+				for _, filamentID := range filamentSpoolPage.IDs {
 					filament, err := client.GetFilamentSpool(filamentID)
 
 					if err != nil {

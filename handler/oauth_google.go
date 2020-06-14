@@ -74,16 +74,10 @@ func OauthGoogleCallback(w http.ResponseWriter, r *http.Request) {
 		"id":    userData.Id,
 		"email": userData.Email,
 	})
-	tokenString, error := token.SignedString(jwtSecret)
-	if error != nil {
-		fmt.Println(error)
-	}
-
+	tokenString, _ := token.SignedString(jwtSecret)
 	expiration := time.Now().Add(365 * 24 * time.Hour)
 	cookie := http.Cookie{Name: "authtoken", Value: tokenString, Expires: expiration, Path: "/", SameSite: http.SameSiteLaxMode}
 	http.SetCookie(w, &cookie)
-
-	fmt.Fprintf(w, "Token: %s\n", data)
 
 }
 

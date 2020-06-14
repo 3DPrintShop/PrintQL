@@ -75,8 +75,6 @@ type NewPrinterRequest struct {
 }
 
 func (c *Client) CreatePrinter(request NewPrinterRequest) (string, error) {
-	fmt.Printf("Name: %s, apiKey: %s, endpoint: %s\n", request.Name, request.APIKey, request.Endpoint)
-
 	id := uuid.New()
 
 	c.db.Update(func(tx *bolt.Tx) error {

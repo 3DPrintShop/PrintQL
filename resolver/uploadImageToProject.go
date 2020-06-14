@@ -2,7 +2,6 @@ package resolver
 
 import (
 	"context"
-	"fmt"
 	"github.com/3DPrintShop/PrintQL/printdb"
 	"github.com/graph-gophers/graphql-go"
 	graphqlupload "github.com/smithaitufe/go-graphql-upload"
@@ -19,24 +18,23 @@ type uploadImageToProjectArgs struct {
 	Request   uploadImageRequest
 }
 
+// UploadImageToProject uploads an image then associates that image with a project.
 func (r SchemaResolver) UploadImageToProject(ctx context.Context, args uploadImageToProjectArgs) (*graphql.ID, error) {
-	fmt.Println("Attempting to create file for image upload")
-	fmt.Printf("FileName: %s\n", args.Request.Image.FileName)
-	fmt.Printf("FilePath: %s\n", args.Request.Image.FilePath)
-
 	client := ctx.Value("client").(*printdb.Client)
 
-	imageId, err := client.CreateImage(printdb.NewImageRequest{AltText: args.Request.AltText, Type: path.Ext(args.Request.Image.FileName)})
-	client.AssociateImageWithProject(printdb.AssociateImageWithProjectRequest{ProjectID: string(args.ProjectID), ImageID: imageId, Type: path.Ext(args.Request.Image.FileName)})
+	imageID, err := client.CreateImage(printdb.NewImageRequest{AltText: args.Request.AltText, Type: path.Ext(args.Request.Image.FileName)})
+	err = client.AssociateImageWithProject(printdb.AssociateImageWithProjectRequest{ProjectID: string(args.ProjectID), ImageID: imageID, Type: path.Ext(args.Request.Image.FileName)})
+	if err != nil {
+		return nil, err
+	}
 
 	rd, err := args.Request.Image.CreateReadStream()
 	if err != nil {
-		fmt.Println(err.Error())
+		// Need to delete this as part of the transaction?
+		return nil, err
 	}
 	if rd != nil {
-		args.Request.Image.WriteFile("./media/" + imageId + path.Ext(args.Request.Image.FileName))
-	} else {
-		fmt.Println("failure to create reader for component")
+		args.Request.Image.WriteFile("./media/" + imageID + path.Ext(args.Request.Image.FileName))
 	}
 	return nil, nil
 }

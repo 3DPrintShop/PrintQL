@@ -1,12 +1,3 @@
-// TODO:
-// 	- explain why I use .graphql files to define the schema
-// 	- explain why we embed the .graphql files in the binary.
-// 	- explain why this file is necessary and how the method is used.
-//
-// Use `go generate` to pack all *.graphql files under this directory (and sub-directories) into
-// a binary format.
-//
-//go:generate go-bindata -ignore=\.go -pkg=schema -o=bindata.go ./...
 package schema
 
 import "bytes"

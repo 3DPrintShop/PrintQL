@@ -2,36 +2,34 @@ package resolver
 
 import (
 	"context"
-	"fmt"
 	"github.com/3DPrintShop/PrintQL/loader"
 	"github.com/3DPrintShop/PrintQL/printdb"
 	graphql "github.com/graph-gophers/graphql-go"
 )
 
+// ProjectResolver resolves to the project type.
 type ProjectResolver struct {
 	Project printdb.Project
 }
 
+// NewProjectsArgs are the arguments that can be passed in to define how to filter a list of projects.
 type NewProjectsArgs struct {
 	ID *string
 }
 
+// NewProjectArgs are the arguments that can be passed in to specify which project ro resolve.
 type NewProjectArgs struct {
 	ID string
 }
 
-type Project struct {
-	Id   graphql.ID
-	Name string
-}
-
+// NewProject returns a project resolver for the project specified in the args.
 func NewProject(ctx context.Context, args NewProjectArgs) (*ProjectResolver, error) {
-	fmt.Printf("Project request: %s\n", args.ID)
 	project, errs := loader.LoadProject(ctx, args.ID)
 
 	return &ProjectResolver{Project: project}, errs
 }
 
+// NewProjects returns a set of project resolvers based on the criteria passed in.
 func NewProjects(ctx context.Context, args NewProjectsArgs) (*[]*ProjectResolver, error) {
 	if args.ID != nil {
 		project, err := NewProject(ctx, NewProjectArgs{ID: *args.ID})
@@ -43,7 +41,6 @@ func NewProjects(ctx context.Context, args NewProjectsArgs) (*[]*ProjectResolver
 	projects, err := loader.LoadProjects(ctx, "")
 
 	if err != nil {
-		fmt.Println(err.Error())
 		return nil, err
 	}
 
@@ -54,28 +51,27 @@ func NewProjects(ctx context.Context, args NewProjectsArgs) (*[]*ProjectResolver
 	return &resolvers, nil
 }
 
+// ID returns the identifier of the project.
 func (r *ProjectResolver) ID() graphql.ID {
 	return graphql.ID(r.Project.ID)
 }
 
+// Name returns the Name of the project.
 func (r *ProjectResolver) Name() string {
 	return r.Project.Name
 }
 
+// Public returns if the project is publicly visible.
 func (r *ProjectResolver) Public() bool {
 	return r.Project.Metadata.Public
 }
 
+// Components returns a list of components that are connected with the project.
 func (r *ProjectResolver) Components(ctx context.Context) *[]*ComponentResolver {
 	var resolvers []*ComponentResolver
-	fmt.Printf("Attempting to get components for project %s\n", r.Project.ID)
-	for _, componetId := range r.Project.Components.ComponentIds {
-		fmt.Printf("Getting component %s\n", componetId)
-		component, err := loader.LoadComponent(ctx, componetId)
-		if err != nil {
-			fmt.Printf("Failed to load component by id %s\n", componetId)
-			fmt.Println(err)
-		} else {
+	for _, componetID := range r.Project.Components.ComponentIds {
+		component, err := loader.LoadComponent(ctx, componetID)
+		if err == nil {
 			resolvers = append(resolvers, &ComponentResolver{Component: component})
 		}
 	}
@@ -83,15 +79,13 @@ func (r *ProjectResolver) Components(ctx context.Context) *[]*ComponentResolver 
 	return &resolvers
 }
 
+// Images returns a list of images that are connected with the project.
 func (r *ProjectResolver) Images(ctx context.Context) *[]*MediaResolver {
 	var resolvers []*MediaResolver
-	fmt.Printf("Attempting to get components for project %s\n", r.Project.ID)
 	for _, mediaID := range r.Project.Images.MediaIds {
 		mediaResolver, err := NewMedia(ctx, NewMediaArgs{ID: mediaID})
 		if err == nil {
 			resolvers = append(resolvers, mediaResolver)
-		} else {
-			fmt.Printf("Failed to get media resolver for id: %s\n", mediaID)
 		}
 	}
 

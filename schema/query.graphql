@@ -8,6 +8,8 @@ type Query {
   components(id: ID): [Component!]
   # List out filament brands
   filamentBrands(id: ID): [FilamentBrand!]
+  # All information related to filaments
+  filament: Filament
   #The user
   self: Account
 }

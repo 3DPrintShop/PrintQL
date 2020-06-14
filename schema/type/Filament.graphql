@@ -1,0 +1,7 @@
+# A wrapper for things related to filament
+type Filament {
+    # List out filament brands
+    brands(id: ID): [FilamentBrand!]
+    # List out filament spools
+    spools(id: ID): [FilamentSpool!]
+}

@@ -46,7 +46,7 @@ func NewFilamentBrands(ctx context.Context, args NewFilamentBrandsArgs) (*[]*Fil
 		return nil, err
 	}
 
-	for _, filamentBrandID := range filamentBrands.FilamentBrandIDs {
+	for _, filamentBrandID := range filamentBrands.IDs {
 		filamentBrand, err := NewFilamentBrand(ctx, NewFilamentBrandArgs{ID: filamentBrandID})
 		if err != nil {
 			errs = append(errs, err)

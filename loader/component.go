@@ -2,7 +2,6 @@ package loader
 
 import (
 	"context"
-	"fmt"
 	"github.com/3DPrintShop/PrintQL/errors"
 	"github.com/3DPrintShop/PrintQL/printdb"
 	"github.com/graph-gophers/dataloader"
@@ -10,7 +9,6 @@ import (
 )
 
 func LoadComponent(ctx context.Context, componentId string) (printdb.Component, error) {
-	fmt.Println("Component ID to load: " + componentId)
 	var component printdb.Component
 
 	ldr, err := extract(ctx, componentLoaderKey)

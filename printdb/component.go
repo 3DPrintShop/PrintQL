@@ -69,7 +69,6 @@ func (c *Client) Components(pageId *string) (ComponentPage, error) {
 		}
 
 		for k, _ := c.First(); k != nil; k, _ = c.Next() {
-			fmt.Println(string(k))
 			componentIds = append(componentIds, string(k))
 		}
 
@@ -90,14 +89,12 @@ func (c *Client) CreateComponent(request NewComponentRequest) (string, error) {
 		b := tx.Bucket([]byte(ComponentBucket))
 		cb, err := b.CreateBucket([]byte(id.String()))
 		if err != nil {
-			fmt.Printf("Error creating component bucket")
 			return err
 		}
 
 		_, err = cb.CreateBucket([]byte(ComponentProjectBucket))
 
 		if err != nil {
-			fmt.Printf("Error creating component project's bucket")
 			return err
 		}
 
@@ -124,7 +121,6 @@ func (c *Client) GetNextComponentProjectPage(request ComponentProjectPage) (Comp
 		cpb := cb.Bucket([]byte(ComponentProjectBucket))
 
 		if cpb == nil {
-			fmt.Printf("Failed to get pcb for project")
 			return nil
 		}
 
@@ -135,7 +131,6 @@ func (c *Client) GetNextComponentProjectPage(request ComponentProjectPage) (Comp
 		}
 
 		for k, _ := c.First(); k != nil; k, _ = c.Next() {
-			fmt.Println(string(k))
 			projectIds = append(projectIds, string(k))
 		}
 

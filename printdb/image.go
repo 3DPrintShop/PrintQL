@@ -32,11 +32,8 @@ func (c *Client) Image(componentId string) (Image, error) {
 			Type:    string(pv.Get([]byte(Type))),
 		}
 
-		fmt.Println(image)
-
 		return nil
 	})
-	fmt.Println(image)
 	return image, err
 }
 
@@ -78,7 +75,6 @@ func (c *Client) CreateImage(request NewImageRequest) (string, error) {
 		b := tx.Bucket([]byte(ImageBucket))
 		ib, err := b.CreateBucket([]byte(id.String()))
 		if err != nil {
-			fmt.Printf("Error creating component bucket")
 			return err
 		}
 

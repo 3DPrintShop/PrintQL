@@ -10,4 +10,6 @@ type Mutation {
     uploadComponent(projectId: ID!, component: Upload!): ID
     # Adds an image to a project gallery
     uploadImageToProject(request: UploadImageRequest!, projectId: ID!): ID
+    # Creates a new brand of filament
+    createFilamentBrand(name: String!): ID
 }

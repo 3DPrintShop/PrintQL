@@ -5,16 +5,18 @@ import (
 	"github.com/vitiock/go-octoprint"
 )
 
-// FilmResolver resolves the Film type.
+// PrinterFileResolver resolves the Printer File type.
 type PrinterFileResolver struct {
 	File *octoprint.FileInformation
 }
 
+// NewPrinterFilesArgs are the arguments required to get the files for a printer.
 type NewPrinterFilesArgs struct {
 	APIKey   string
 	Endpoint string
 }
 
+// NewPrinterFiles returns a list of file resolvers
 func NewPrinterFiles(ctx context.Context, args NewPrinterFilesArgs) (*[]*PrinterFileResolver, error) {
 	client := octoprint.NewClient(args.Endpoint, args.APIKey)
 	request := octoprint.FilesRequest{
@@ -38,24 +40,27 @@ func NewPrinterFiles(ctx context.Context, args NewPrinterFilesArgs) (*[]*Printer
 	return &resolvers, err
 }
 
-// ID resolves the film's unique identifier.
+// Hash resolves the files hash string.
 func (r *PrinterFileResolver) Hash() string {
 	return r.File.Hash
 }
 
-// Episode resolves the episode number of this film.
+// Path resolves the path of this file.
 func (r *PrinterFileResolver) Path() string {
 	return r.File.Path
 }
 
+// EstimatedPrintTime resolves the estimated time it takes to print this file.
 func (r *PrinterFileResolver) EstimatedPrintTime() float64 {
 	return r.File.GCodeAnalysis.EstimatedPrintTime
 }
 
+// LastPrintTime resolves the amount of time it took to print last time.
 func (r *PrinterFileResolver) LastPrintTime() float64 {
 	return r.File.Print.Last.PrintTime
 }
 
+// AveragePrintTime resolves what the average print time for the file was.
 func (r *PrinterFileResolver) AveragePrintTime() float64 {
 	return r.File.Print.Last.PrintTime
 }

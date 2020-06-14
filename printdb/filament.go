@@ -1,6 +1,7 @@
 package printdb
 
 import (
+	"fmt"
 	"github.com/boltdb/bolt"
 	"github.com/google/uuid"
 )
@@ -75,25 +76,8 @@ type FilamentBrandPage struct {
 }
 
 // GetFilamentBrands returns a paginated set of identifiers for filament brands, and takes in an identifier to get subsequent pages, that identifier is returned from this function.
-func (c *Client) GetFilamentBrands(nextPageId *string) (FilamentBrandPage, error) {
-	var filamentIDs []string
-
-	err := c.db.Update(func(tx *bolt.Tx) error {
-		b := tx.Bucket([]byte(FilamentBrandBucket))
-		c := b.Cursor()
-
-		if nextPageId != nil {
-			c.Seek([]byte(*nextPageId))
-		}
-
-		for k, _ := c.First(); k != nil; k, _ = c.Next() {
-			filamentIDs = append(filamentIDs, string(k))
-		}
-
-		return nil
-	})
-
-	return FilamentBrandPage{FilamentBrandIDs: filamentIDs, NextPage: nil}, err
+func (c *Client) GetFilamentBrands(nextPageId *string) (IdentifierPage, error) {
+	return c.GetIdsFromBaseBucket(FilamentBrandBucket, nil, nil)
 }
 
 // GetFilamentBrand returns details about a filament brand given it's id.
@@ -142,42 +126,22 @@ func (c *Client) CreateFilamentSpool(brandID string) (string, error) {
 	return id.String(), err
 }
 
-// FilamentSpoolPage is a paginated list of filament spool identifiers, as well as the identifier needed to get the next page if it exists.
-type FilamentSpoolPage struct {
-	//FilamentSpoolIDs is the list of filament spool ids that are part of the page.
-	FilamentSpoolIDs []string
-	//NextPage is the identifier used to get the next page of identifiers.
-	NextPage *string
+// GetFilamentSpools gets a paginated list of filament spool ids.
+func (c *Client) GetFilamentSpools(nextPageId *string) (IdentifierPage, error) {
+	return c.GetIdsFromBaseBucket(FilamentSpoolBucket, nextPageId, nil)
 }
 
-// GetFilamentSpools gets a paginated list of fillament spool ids.
-func (c *Client) GetFilamentSpools(nextPageId *string) (FilamentSpoolPage, error) {
-	var spoolIDs []string
-
-	err := c.db.Update(func(tx *bolt.Tx) error {
-		b := tx.Bucket([]byte(FilamentSpoolBucket))
-		c := b.Cursor()
-
-		if nextPageId != nil {
-			c.Seek([]byte(*nextPageId))
-		}
-
-		for k, _ := c.First(); k != nil; k, _ = c.Next() {
-			spoolIDs = append(spoolIDs, string(k))
-		}
-
-		return nil
-	})
-
-	return FilamentSpoolPage{FilamentSpoolIDs: spoolIDs, NextPage: nil}, err
-}
-
-// GetFilamentBrand returns details about a filament brand given it's id.
+// GetFilamentSpool returns details about a filament spool given it's id.
 func (c *Client) GetFilamentSpool(id string) (FilamentSpool, error) {
 	var filamentSpool FilamentSpool
 	err := c.db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(FilamentSpoolBucket))
 		fs := b.Bucket([]byte(id))
+
+		if fs == nil {
+			return fmt.Errorf("no filament spool by id: %s", id)
+		}
+
 		filamentSpool = FilamentSpool{
 			ID:              id,
 			FilamentBrand:   string(fs.Get([]byte(BrandID))),

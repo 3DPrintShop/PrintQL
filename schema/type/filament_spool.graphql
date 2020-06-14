@@ -1,0 +1,7 @@
+# A specific filament spool
+type FilamentSpool {
+    # The identifier for the specific spool of filament.
+    id: ID!
+    # brand is the brand of filament that the spool is.
+    brand: FilamentBrand!
+}

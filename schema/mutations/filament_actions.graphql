@@ -1,0 +1,8 @@
+# FilamentActions represents the actions that can be taken on filament, both brands and spools
+type FilamentActions {
+    # CreateFilamentBrand creates a new brand of filament with the name specified
+    createFilamentBrand(name: String!): FilamentBrand
+
+    # CreateFilamentSpool creates a spool of filament of the type specified by brandID
+    createFilamentSpool(brandID: ID): FilamentSpool
+}

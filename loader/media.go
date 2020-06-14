@@ -2,7 +2,6 @@ package loader
 
 import (
 	"context"
-	"fmt"
 	"github.com/3DPrintShop/PrintQL/errors"
 	"github.com/3DPrintShop/PrintQL/printdb"
 	"github.com/graph-gophers/dataloader"
@@ -10,7 +9,6 @@ import (
 )
 
 func LoadMedia(ctx context.Context, componentId string) (printdb.Image, error) {
-	fmt.Println("Component ID to load: " + componentId)
 	var media printdb.Image
 
 	ldr, err := extract(ctx, mediaLoaderKey)
@@ -27,8 +25,6 @@ func LoadMedia(ctx context.Context, componentId string) (printdb.Image, error) {
 	if !ok {
 		return media, errors.WrongType(media, data)
 	}
-
-	fmt.Printf("Loader: Media: %v", media)
 
 	return media, nil
 }
@@ -59,7 +55,6 @@ func (ldr mediaLoader) loadBatch(ctx context.Context, urls dataloader.Keys) []*d
 			defer wg.Done()
 
 			data, err := ldr.get.Image(url.String())
-			fmt.Printf("%v\n", data)
 			results[i] = &dataloader.Result{Data: data, Error: err}
 		}(i, url)
 	}

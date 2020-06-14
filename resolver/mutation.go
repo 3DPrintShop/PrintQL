@@ -2,7 +2,6 @@ package resolver
 
 import (
 	"context"
-	"fmt"
 	"github.com/3DPrintShop/PrintQL/printdb"
 	"github.com/boltdb/bolt"
 	"github.com/graph-gophers/graphql-go"
@@ -71,8 +70,6 @@ type uploadComponentArgs struct {
 }
 
 func (r SchemaResolver) UploadComponent(ctx context.Context, args uploadComponentArgs) (*graphql.ID, error) {
-	fmt.Println("Attempting to create file for upload")
-
 	client := ctx.Value("client").(*printdb.Client)
 
 	componentId, err := client.CreateComponent(printdb.NewComponentRequest{Name: args.Component.FileName})
@@ -80,7 +77,7 @@ func (r SchemaResolver) UploadComponent(ctx context.Context, args uploadComponen
 
 	rd, err := args.Component.CreateReadStream()
 	if err != nil {
-		fmt.Println(err.Error())
+		return nil, err
 	}
 	if rd != nil {
 		b2, err := ioutil.ReadAll(rd)
@@ -91,8 +88,10 @@ func (r SchemaResolver) UploadComponent(ctx context.Context, args uploadComponen
 
 		// method 2: using WriteFile function. Easily write to any location in the local file system
 		args.Component.WriteFile("./uploads/" + componentId + ".stl")
-	} else {
-		fmt.Println("failure to create reader for component")
 	}
 	return nil, nil
+}
+
+func (r SchemaResolver) FilamentActions(ctx context.Context) (*FilamentActionsResolver, error) {
+	return NewFilamentActionsResolver()
 }

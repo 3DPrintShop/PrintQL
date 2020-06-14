@@ -2,7 +2,6 @@ package loader
 
 import (
 	"context"
-	"fmt"
 	"github.com/3DPrintShop/PrintQL/errors"
 	"github.com/3DPrintShop/PrintQL/printdb"
 	"github.com/graph-gophers/dataloader"
@@ -31,8 +30,9 @@ func LoadFilamentBrand(ctx context.Context, filamentBrandID string) (printdb.Fil
 	return filamentBrand, nil
 }
 
-func LoadFilamentBrands(ctx context.Context, filamentBrandID string) (printdb.FilamentBrandPage, error) {
-	var filamentBrands printdb.FilamentBrandPage
+// LoadFilamentBrands loads a paginated set of filament brands.
+func LoadFilamentBrands(ctx context.Context, filamentBrandID string) (printdb.IdentifierPage, error) {
+	var filamentBrands printdb.IdentifierPage
 
 	ldr, err := extract(ctx, filamentBrandsLoaderKey)
 	if err != nil {
@@ -44,7 +44,7 @@ func LoadFilamentBrands(ctx context.Context, filamentBrandID string) (printdb.Fi
 		return filamentBrands, err
 	}
 
-	filamentBrands, ok := data.(printdb.FilamentBrandPage)
+	filamentBrands, ok := data.(printdb.IdentifierPage)
 	if !ok {
 		return filamentBrands, errors.WrongType(filamentBrands, data)
 	}
@@ -57,7 +57,7 @@ type filamentBrandGetter interface {
 }
 
 type filamentBrandsGetter interface {
-	GetFilamentBrands(id *string) (printdb.FilamentBrandPage, error)
+	GetFilamentBrands(id *string) (printdb.IdentifierPage, error)
 }
 
 type filamentBrandLoader struct {
@@ -90,7 +90,6 @@ func (ldr filamentBrandLoader) loadBatch(ctx context.Context, urls dataloader.Ke
 			defer wg.Done()
 
 			data, err := ldr.get.GetFilamentBrand(url.String())
-			fmt.Printf("%v\n", data)
 			results[i] = &dataloader.Result{Data: data, Error: err}
 		}(i, url)
 	}
@@ -114,7 +113,6 @@ func (ldr filamentBrandsLoader) loadBatch(ctx context.Context, ids dataloader.Ke
 			defer wg.Done()
 			idString := id.String()
 			data, err := ldr.get.GetFilamentBrands(&idString)
-			fmt.Printf("%v\n", data)
 			results[i] = &dataloader.Result{Data: data, Error: err}
 		}(i, id)
 	}

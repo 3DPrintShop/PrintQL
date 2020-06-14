@@ -2,7 +2,6 @@ package resolver
 
 import (
 	"context"
-	"fmt"
 	"github.com/vitiock/go-octoprint"
 )
 
@@ -28,7 +27,6 @@ func NewPrinterState(ctx context.Context, args NewPrinterStateArgs) (*PrinterSta
 	connectionResult, err := cr.Do(client)
 
 	if err != nil {
-		fmt.Printf(err.Error())
 		return &PrinterStateResolver{
 			ConnectionState: octoprint.ConnectionState("INVALID"),
 			PrinterState:    "INVALID",
@@ -44,7 +42,7 @@ func NewPrinterState(ctx context.Context, args NewPrinterStateArgs) (*PrinterSta
 	stateResult, err := sr.Do(client)
 
 	if err != nil {
-		fmt.Printf(err.Error())
+		return &resolver, err
 	}
 
 	if stateResult != nil {

@@ -110,7 +110,6 @@ func (c *Client) GetProjects(pageID *string) (ProjectPage, error) {
 		}
 
 		for k, _ := c.First(); k != nil; k, _ = c.Next() {
-			fmt.Println(string(k))
 			projectIds = append(projectIds, string(k))
 		}
 
@@ -137,7 +136,6 @@ func (c *Client) GetNextProjectImagePage(request ProjectMediaPage) (ProjectMedia
 		pcb := pb.Bucket([]byte(ProjectImagesBucket))
 
 		if pcb == nil {
-			fmt.Printf("Failed to get pcb for project")
 			return nil
 		}
 
@@ -149,7 +147,6 @@ func (c *Client) GetNextProjectImagePage(request ProjectMediaPage) (ProjectMedia
 
 		for k, _ := c.First(); k != nil; k, _ = c.Next() {
 			//Should probably put something in here to restrict to images
-			fmt.Println(string(k))
 			mediaIDs = append(mediaIDs, string(k))
 		}
 
@@ -182,7 +179,6 @@ func (c *Client) GetNextProjectComponentPage(request ProjectComponentPage) (Proj
 		}
 
 		for k, _ := c.First(); k != nil; k, _ = c.Next() {
-			fmt.Println(string(k))
 			componentIds = append(componentIds, string(k))
 		}
 
@@ -203,7 +199,6 @@ func (c *Client) CreateProject(projectName string) (string, error) {
 		pb, err := b.CreateBucket([]byte(id.String()))
 
 		if err != nil {
-			fmt.Printf("Error creating project bucket")
 			return err
 		}
 
@@ -272,7 +267,6 @@ type AssociateImageWithProjectRequest struct {
 
 // AssociateImageWithProject associates an image with a project.
 func (c *Client) AssociateImageWithProject(request AssociateImageWithProjectRequest) error {
-	fmt.Printf("Creating association for %s and image %s\n", request.ProjectID, request.ImageID)
 	err := c.db.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(ProjectBucket))
 		pb := b.Bucket([]byte(request.ProjectID))

@@ -34,15 +34,15 @@ func (mock mockFilamentBrandGetter) GetFilamentBrand(id string) (printdb.Filamen
 	return printdb.FilamentBrand{ID: "Loaded twice"}, fmt.Errorf("Function was called a second time")
 }
 
-func (mock mockFilamentBrandGetter) GetFilamentBrands(id *string) (printdb.FilamentBrandPage, error) {
+func (mock mockFilamentBrandGetter) GetFilamentBrands(id *string) (printdb.IdentifierPage, error) {
 	if !mock.loadedPage {
 		mock.loadedPage = true
-		return printdb.FilamentBrandPage{
-			FilamentBrandIDs: []string{"test", "test2", "test3"},
-			NextPage:         nil,
+		return printdb.IdentifierPage{
+			IDs:      []string{"test", "test2", "test3"},
+			NextPage: nil,
 		}, nil
 	}
-	return printdb.FilamentBrandPage{FilamentBrandIDs: nil, NextPage: nil}, fmt.Errorf("Function was called a second time")
+	return printdb.IdentifierPage{IDs: nil, NextPage: nil}, fmt.Errorf("Function was called a second time")
 }
 
 func TestLoader_TestFilamentBrand(t *testing.T) {
@@ -103,13 +103,10 @@ func TestLoader_TestFilamentBrands(t *testing.T) {
 			return
 		}
 
-		assert.Equal(t, 3, len(filamentBrands.FilamentBrandIDs))
-		if len(filamentBrands.FilamentBrandIDs) != 3 {
-			return
-		}
-		assert.Equal(t, "test", filamentBrands.FilamentBrandIDs[0])
-		assert.Equal(t, "test2", filamentBrands.FilamentBrandIDs[1])
-		assert.Equal(t, "test3", filamentBrands.FilamentBrandIDs[2])
+		assert.Equal(t, 3, len(filamentBrands.IDs))
+		assert.Equal(t, "test", filamentBrands.IDs[0])
+		assert.Equal(t, "test2", filamentBrands.IDs[1])
+		assert.Equal(t, "test3", filamentBrands.IDs[2])
 		assert.Nil(t, filamentBrands.NextPage)
 	})
 
@@ -121,9 +118,9 @@ func TestLoader_TestFilamentBrands(t *testing.T) {
 				return
 			}
 
-			assert.Equal(t, "test", filamentBrands.FilamentBrandIDs[0])
-			assert.Equal(t, "test2", filamentBrands.FilamentBrandIDs[1])
-			assert.Equal(t, "test3", filamentBrands.FilamentBrandIDs[2])
+			assert.Equal(t, "test", filamentBrands.IDs[0])
+			assert.Equal(t, "test2", filamentBrands.IDs[1])
+			assert.Equal(t, "test3", filamentBrands.IDs[2])
 			assert.Nil(t, filamentBrands.NextPage)
 		}
 	})
