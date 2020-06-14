@@ -1,3 +1,8 @@
+// Use `go generate` to pack all *.graphql files under this directory (and sub-directories) into
+// a binary format.
+//
+//go:generate go-bindata -ignore=\.go -pkg=schema -o=bindata.go ./...
+
 package schema
 
 import "bytes"
