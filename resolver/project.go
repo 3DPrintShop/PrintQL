@@ -70,9 +70,9 @@ func (r *ProjectResolver) Public() bool {
 func (r *ProjectResolver) Components(ctx context.Context) *[]*ComponentResolver {
 	var resolvers []*ComponentResolver
 	for _, componetID := range r.Project.Components.ComponentIds {
-		component, err := loader.LoadComponent(ctx, componetID)
+		componentResolver, err := NewComponent(ctx, NewComponentArgs{ID: componetID})
 		if err == nil {
-			resolvers = append(resolvers, &ComponentResolver{Component: component})
+			resolvers = append(resolvers, componentResolver)
 		}
 	}
 

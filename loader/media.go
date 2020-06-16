@@ -11,7 +11,7 @@ import (
 func LoadMedia(ctx context.Context, componentId string) (printdb.Image, error) {
 	var media printdb.Image
 
-	ldr, err := extract(ctx, mediaLoaderKey)
+	ldr, err := extract(ctx, MediaLoaderKey)
 	if err != nil {
 		return media, err
 	}
@@ -37,7 +37,7 @@ type mediaLoader struct {
 	get mediaGetter
 }
 
-func newMediaLoader(client mediaGetter) dataloader.BatchFunc {
+func NewMediaLoader(client mediaGetter) dataloader.BatchFunc {
 	return mediaLoader{get: client}.loadBatch
 }
 

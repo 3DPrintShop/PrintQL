@@ -11,7 +11,7 @@ import (
 func LoadComponent(ctx context.Context, componentId string) (printdb.Component, error) {
 	var component printdb.Component
 
-	ldr, err := extract(ctx, componentLoaderKey)
+	ldr, err := extract(ctx, ComponentLoaderKey)
 	if err != nil {
 		return component, err
 	}
@@ -74,7 +74,7 @@ type componentLoader struct {
 	get componentGetter
 }
 
-func newComponentLoader(client componentGetter) dataloader.BatchFunc {
+func NewComponentLoader(client componentGetter) dataloader.BatchFunc {
 	return componentLoader{get: client}.loadBatch
 }
 

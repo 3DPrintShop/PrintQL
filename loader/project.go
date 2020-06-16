@@ -11,7 +11,7 @@ import (
 func LoadProject(ctx context.Context, projectId string) (printdb.Project, error) {
 	var project printdb.Project
 
-	ldr, err := extract(ctx, projectLoaderKey)
+	ldr, err := extract(ctx, ProjectLoaderKey)
 	if err != nil {
 		return project, err
 	}
@@ -32,7 +32,7 @@ func LoadProject(ctx context.Context, projectId string) (printdb.Project, error)
 func LoadProjects(ctx context.Context, projectPageID string) ([]printdb.Project, error) {
 	var projects []printdb.Project
 
-	ldr, err := extract(ctx, projectPageLoaderKey)
+	ldr, err := extract(ctx, ProjectPageLoaderKey)
 	if err != nil {
 		return projects, err
 	}
@@ -74,11 +74,11 @@ type projectLoader struct {
 	get projectGetter
 }
 
-func newProjectLoader(client projectGetter) dataloader.BatchFunc {
+func NewProjectLoader(client projectGetter) dataloader.BatchFunc {
 	return projectLoader{get: client}.loadBatch
 }
 
-func newProjectPageLoader(client projectPageGetter) dataloader.BatchFunc {
+func NewProjectPageLoader(client projectPageGetter) dataloader.BatchFunc {
 	return projectPageLoader{get: client}.loadBatch
 }
 

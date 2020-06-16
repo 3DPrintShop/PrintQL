@@ -11,11 +11,11 @@ type key string
 const (
 	printerLoaderKey        key = "printer"
 	printerPageLoaderKey    key = "printerPage"
-	projectLoaderKey        key = "project"
-	projectPageLoaderKey    key = "projectPage"
-	componentLoaderKey      key = "component"
+	ProjectLoaderKey        key = "project"
+	ProjectPageLoaderKey    key = "projectPage"
+	ComponentLoaderKey      key = "component"
 	componentPageLoaderKey  key = "componentPage"
-	mediaLoaderKey          key = "media"
+	MediaLoaderKey          key = "media"
 	filamentBrandLoaderKey  key = "filamentBrand"
 	filamentBrandsLoaderKey key = "filamentBrands"
 	filamentSpoolLoaderKey  key = "filamentSpool"
@@ -41,11 +41,11 @@ func Initialize(boltClient Client) Collection {
 		lookup: map[key]dataloader.BatchFunc{
 			printerLoaderKey:        newPrinterLoader(boltClient),
 			printerPageLoaderKey:    newPrinterPageLoader(boltClient),
-			projectLoaderKey:        newProjectLoader(boltClient),
-			projectPageLoaderKey:    newProjectPageLoader(boltClient),
-			componentLoaderKey:      newComponentLoader(boltClient),
+			ProjectLoaderKey:        NewProjectLoader(boltClient),
+			ProjectPageLoaderKey:    NewProjectPageLoader(boltClient),
+			ComponentLoaderKey:      NewComponentLoader(boltClient),
 			componentPageLoaderKey:  newComponentPageLoader(boltClient),
-			mediaLoaderKey:          newMediaLoader(boltClient),
+			MediaLoaderKey:          NewMediaLoader(boltClient),
 			filamentBrandLoaderKey:  newFilamentBrandLoader(boltClient),
 			filamentBrandsLoaderKey: newFilamentBrandsLoader(boltClient),
 			filamentSpoolLoaderKey:  newFilamentSpoolLoader(boltClient),

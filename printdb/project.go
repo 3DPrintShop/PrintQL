@@ -94,7 +94,7 @@ func (c *Client) GetProject(projectID string) (Project, error) {
 type ProjectPage struct {
 	// The list of project ids.
 	ProjectIDs []string
-	nextKey    *string
+	NextKey    *string
 }
 
 // GetProjects retrieves a paginated list of project IDs.
@@ -116,7 +116,7 @@ func (c *Client) GetProjects(pageID *string) (ProjectPage, error) {
 		return nil
 	})
 
-	return ProjectPage{ProjectIDs: projectIds, nextKey: nil}, err
+	return ProjectPage{ProjectIDs: projectIds, NextKey: nil}, err
 }
 
 // GetImagesForProject retrieves a paginated list of images for a project.
