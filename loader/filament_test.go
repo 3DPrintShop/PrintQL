@@ -46,7 +46,7 @@ func (mock mockFilamentBrandGetter) GetFilamentBrands(id *string) (printdb.Ident
 }
 
 func TestLoader_TestFilamentBrand(t *testing.T) {
-	context, err := setup(filamentBrandLoaderKey, newFilamentBrandLoader(mockFilamentBrandGetter{loaded: false}))
+	context, err := setup(FilamentBrandLoaderKey, NewFilamentBrandLoader(mockFilamentBrandGetter{loaded: false}))
 	if err != nil {
 		t.Error(err)
 	}
@@ -86,7 +86,7 @@ func TestLoader_TestFilamentBrand(t *testing.T) {
 }
 
 func TestLoader_TestFilamentBrands(t *testing.T) {
-	context, err := setup(filamentBrandsLoaderKey, newFilamentBrandsLoader(mockFilamentBrandGetter{loadedPage: false}))
+	context, err := setup(FilamentBrandsLoaderKey, NewFilamentBrandsLoader(mockFilamentBrandGetter{loadedPage: false}))
 	if err != nil {
 		t.Error(err)
 	}

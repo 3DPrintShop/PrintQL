@@ -23,6 +23,9 @@ func (r SchemaResolver) UploadImageToProject(ctx context.Context, args uploadIma
 	client := ctx.Value("client").(*printdb.Client)
 
 	imageID, err := client.CreateImage(printdb.NewImageRequest{AltText: args.Request.AltText, Type: path.Ext(args.Request.Image.FileName)})
+	if err != nil {
+		return nil, err
+	}
 	err = client.AssociateImageWithProject(printdb.AssociateImageWithProjectRequest{ProjectID: string(args.ProjectID), ImageID: imageID, Type: path.Ext(args.Request.Image.FileName)})
 	if err != nil {
 		return nil, err

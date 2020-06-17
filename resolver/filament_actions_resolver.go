@@ -7,27 +7,31 @@ import (
 	"github.com/graph-gophers/graphql-go"
 )
 
+// FilamentActionsResolver is a resolver for actions that can be taken on filament.
 type FilamentActionsResolver struct {
 }
 
+// NewFilamentActionsResolver creates a new resolver for mutating filament.
 func NewFilamentActionsResolver() (*FilamentActionsResolver, error) {
 	resolver := FilamentActionsResolver{}
 	return &resolver, nil
 }
 
+// CreateFilamentBrand creates a new brand of filament.
 func (r FilamentActionsResolver) CreateFilamentBrand(ctx context.Context, args createFilamentBrandArgs) (*graphql.ID, error) {
 	client := ctx.Value("client").(*printdb.Client)
 
 	filamentBrandID, err := client.CreateFilamentBrand(args.Name)
-	brandId := graphql.ID(filamentBrandID)
+	brandID := graphql.ID(filamentBrandID)
 
-	return &brandId, err
+	return &brandID, err
 }
 
 type createFilamentSpoolArgs struct {
 	BrandID graphql.ID
 }
 
+// CreateFilamentSpool creates a new spool of filament.
 func (r FilamentActionsResolver) CreateFilamentSpool(ctx context.Context, args createFilamentSpoolArgs) (*FilamentSpoolResolver, error) {
 	var errs errors.Errors
 

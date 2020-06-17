@@ -79,5 +79,5 @@ func (r *FilamentBrandResolver) StartWeight() *int32 {
 
 // SpoolWeight is the weight of the spool that the filament comes on.
 func (r *FilamentBrandResolver) SpoolWeight() *int32 {
-	return &r.filamentBrand.StartWeight
+	return &r.filamentBrand.SpoolWeight
 }

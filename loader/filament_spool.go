@@ -8,7 +8,7 @@ import (
 	"sync"
 )
 
-// LoadFilamentBrand retrieves the filament brand loader from the context, and uses it to load the specified filament brand
+// LoadFilamentSpool retrieves the filament spool loader from the context, and uses it to load the specified filament spool
 func LoadFilamentSpool(ctx context.Context, filamentBrandID string) (printdb.FilamentSpool, error) {
 	var filamentSpool printdb.FilamentSpool
 
@@ -30,7 +30,8 @@ func LoadFilamentSpool(ctx context.Context, filamentBrandID string) (printdb.Fil
 	return filamentSpool, nil
 }
 
-func LoadFilamentSpools(ctx context.Context, filamentBrandID string) (printdb.IdentifierPage, error) {
+// LoadFilamentSpools loads a paginated set of spool ids.
+func LoadFilamentSpools(ctx context.Context, pageID string) (printdb.IdentifierPage, error) {
 	var filamentSpools printdb.IdentifierPage
 
 	ldr, err := extract(ctx, filamentSpoolsLoaderKey)
@@ -38,7 +39,7 @@ func LoadFilamentSpools(ctx context.Context, filamentBrandID string) (printdb.Id
 		return filamentSpools, err
 	}
 
-	data, err := ldr.Load(ctx, dataloader.StringKey(filamentBrandID))()
+	data, err := ldr.Load(ctx, dataloader.StringKey(pageID))()
 	if err != nil {
 		return filamentSpools, err
 	}

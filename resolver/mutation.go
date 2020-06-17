@@ -16,7 +16,7 @@ type CreatePrintersQueryArgs struct {
 	Endpoint string
 }
 
-// CreatePrinter creates a printer and returns a resolver to the newly creater printer
+// CreatePrinter creates a printer and returns a resolver to the newly created printer.
 func (r SchemaResolver) CreatePrinter(ctx context.Context, args CreatePrintersQueryArgs) (*PrinterResolver, error) {
 	client := ctx.Value("client").(*printdb.Client)
 
@@ -80,7 +80,13 @@ func (r SchemaResolver) UploadComponent(ctx context.Context, args uploadComponen
 	client := ctx.Value("client").(*printdb.Client)
 
 	componentID, err := client.CreateComponent(printdb.NewComponentRequest{Name: args.Component.FileName})
-	client.AssociateComponentWithProject(string(args.ProjectID), componentID)
+	if err != nil {
+		return nil, err
+	}
+	err = client.AssociateComponentWithProject(string(args.ProjectID), componentID)
+	if err != nil {
+		return nil, err
+	}
 
 	rd, err := args.Component.CreateReadStream()
 	if err != nil {

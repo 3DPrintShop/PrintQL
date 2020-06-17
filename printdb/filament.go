@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 )
 
-// Filament stores information about a specific brand of filament.
+// FilamentBrand stores information about a specific brand of filament.
 type FilamentBrand struct {
 	// ID is the identifier for the filament.
 	ID string
@@ -76,7 +76,7 @@ type FilamentBrandPage struct {
 }
 
 // GetFilamentBrands returns a paginated set of identifiers for filament brands, and takes in an identifier to get subsequent pages, that identifier is returned from this function.
-func (c *Client) GetFilamentBrands(nextPageId *string) (IdentifierPage, error) {
+func (c *Client) GetFilamentBrands(nextPageID *string) (IdentifierPage, error) {
 	return c.GetIdsFromBaseBucket(FilamentBrandBucket, nil, nil)
 }
 
@@ -99,6 +99,7 @@ func (c Client) GetFilamentBrand(id string) (FilamentBrand, error) {
 	return filamentBrand, err
 }
 
+// CreateFilamentSpool creates a new spool of filament in the database, and returns it's identifier.
 func (c *Client) CreateFilamentSpool(brandID string) (string, error) {
 	id := uuid.New()
 
@@ -127,8 +128,8 @@ func (c *Client) CreateFilamentSpool(brandID string) (string, error) {
 }
 
 // GetFilamentSpools gets a paginated list of filament spool ids.
-func (c *Client) GetFilamentSpools(nextPageId *string) (IdentifierPage, error) {
-	return c.GetIdsFromBaseBucket(FilamentSpoolBucket, nextPageId, nil)
+func (c *Client) GetFilamentSpools(nextPageID *string) (IdentifierPage, error) {
+	return c.GetIdsFromBaseBucket(FilamentSpoolBucket, nextPageID, nil)
 }
 
 // GetFilamentSpool returns details about a filament spool given it's id.

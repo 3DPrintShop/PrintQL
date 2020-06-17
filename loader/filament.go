@@ -12,7 +12,7 @@ import (
 func LoadFilamentBrand(ctx context.Context, filamentBrandID string) (printdb.FilamentBrand, error) {
 	var filamentBrand printdb.FilamentBrand
 
-	ldr, err := extract(ctx, filamentBrandLoaderKey)
+	ldr, err := extract(ctx, FilamentBrandLoaderKey)
 	if err != nil {
 		return filamentBrand, err
 	}
@@ -34,7 +34,7 @@ func LoadFilamentBrand(ctx context.Context, filamentBrandID string) (printdb.Fil
 func LoadFilamentBrands(ctx context.Context, filamentBrandID string) (printdb.IdentifierPage, error) {
 	var filamentBrands printdb.IdentifierPage
 
-	ldr, err := extract(ctx, filamentBrandsLoaderKey)
+	ldr, err := extract(ctx, FilamentBrandsLoaderKey)
 	if err != nil {
 		return filamentBrands, err
 	}
@@ -68,11 +68,13 @@ type filamentBrandsLoader struct {
 	get filamentBrandsGetter
 }
 
-func newFilamentBrandLoader(client filamentBrandGetter) dataloader.BatchFunc {
+// NewFilamentBrandLoader creates a dataloader.BatchFunc for loading a brand of filament
+func NewFilamentBrandLoader(client filamentBrandGetter) dataloader.BatchFunc {
 	return filamentBrandLoader{get: client}.loadBatch
 }
 
-func newFilamentBrandsLoader(client filamentBrandsGetter) dataloader.BatchFunc {
+// NewFilamentBrandsLoader creates a dataloader.BatchFunc for loading a page of filament brand IDs
+func NewFilamentBrandsLoader(client filamentBrandsGetter) dataloader.BatchFunc {
 	return filamentBrandsLoader{get: client}.loadBatch
 }
 

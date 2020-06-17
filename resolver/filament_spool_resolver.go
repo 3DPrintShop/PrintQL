@@ -8,6 +8,7 @@ import (
 	"github.com/graph-gophers/graphql-go"
 )
 
+// FilamentSpoolResolver resolves the filament spool data type.
 type FilamentSpoolResolver struct {
 	filamentSpool *printdb.FilamentSpool
 }
