@@ -10,6 +10,8 @@ import (
 
 const (
 	testID           = "testID"
+	testSpoolID      = "testSpool"
+	testBrandID      = "testBrandID"
 	testName         = "Test Name"
 	testAltText      = "alt text what it is"
 	testType         = "Jiff"
@@ -35,6 +37,13 @@ var (
 
 type mockPrintDB struct {
 	loaded bool
+}
+
+func (mock mockPrintDB) GetFilamentSpool(id string) (printdb.FilamentSpool, error) {
+	return printdb.FilamentSpool{
+		ID:            id,
+		FilamentBrand: testBrandID,
+	}, nil
 }
 
 var brandIDS = []string{"brand1", "brand2", "brand3", "brand4", "brand5"}
@@ -85,6 +94,10 @@ func (mock mockPrintDB) GetProject(id string) (printdb.Project, error) {
 	return printdb.Project{ID: "Loaded twice"}, fmt.Errorf("Function was called a second time")
 }
 
+func (mock mockPrintDB) LoadSpoolInPrinter(id string, id2 string) error {
+	return nil
+}
+
 func (mock mockPrintDB) GetProjects(pageId *string) (printdb.ProjectPage, error) {
 	ids := []string{"test", "test2", "test3"}
 	page := printdb.ProjectPage{
@@ -102,5 +115,7 @@ func getContext() context.Context {
 	ctx = context.WithValue(ctx, loader.ComponentLoaderKey, dataloader.NewBatchedLoader(loader.NewComponentLoader(mockPrintDB{loaded: false})))
 	ctx = context.WithValue(ctx, loader.FilamentBrandLoaderKey, dataloader.NewBatchedLoader(loader.NewFilamentBrandLoader(mockPrintDB{loaded: false})))
 	ctx = context.WithValue(ctx, loader.FilamentBrandsLoaderKey, dataloader.NewBatchedLoader(loader.NewFilamentBrandsLoader(mockPrintDB{loaded: false})))
+	ctx = context.WithValue(ctx, loader.FilamentSpoolLoaderKey, dataloader.NewBatchedLoader(loader.NewFilamentSpoolLoader(mockPrintDB{loaded: false})))
+	ctx = context.WithValue(ctx, "client", mockPrintDB{loaded: false})
 	return ctx
 }

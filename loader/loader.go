@@ -18,7 +18,7 @@ const (
 	MediaLoaderKey          key = "media"
 	FilamentBrandLoaderKey  key = "filamentBrand"
 	FilamentBrandsLoaderKey key = "filamentBrands"
-	filamentSpoolLoaderKey  key = "filamentSpool"
+	FilamentSpoolLoaderKey  key = "filamentSpool"
 	filamentSpoolsLoaderKey key = "filamentSpools"
 )
 
@@ -48,7 +48,7 @@ func Initialize(boltClient Client) Collection {
 			MediaLoaderKey:          NewMediaLoader(boltClient),
 			FilamentBrandLoaderKey:  NewFilamentBrandLoader(boltClient),
 			FilamentBrandsLoaderKey: NewFilamentBrandsLoader(boltClient),
-			filamentSpoolLoaderKey:  newFilamentSpoolLoader(boltClient),
+			FilamentSpoolLoaderKey:  NewFilamentSpoolLoader(boltClient),
 			filamentSpoolsLoaderKey: newFilamentSpoolsLoader(boltClient),
 		},
 	}

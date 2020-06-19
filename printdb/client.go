@@ -10,6 +10,7 @@ const (
 	APIKey        = "APIKey"
 	Endpoint      = "Endpoint"
 	Alias         = "Alias"
+	LoadedSpool   = "LoadedSpool"
 
 	ProjectBucket = "Projects"
 	Name          = "Name"

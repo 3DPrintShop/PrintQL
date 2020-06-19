@@ -13,17 +13,19 @@ const (
 	TestComponentType = "STL"
 	TestComponentName = "TestName"
 	TestAltText       = "AltText"
+	TestBrand         = "TestBrand"
 )
 
 func TestClient_TestPrinterCreationAndRetrieval(t *testing.T) {
 	type test struct {
 		name             string
 		printersToCreate int
+		loadFilament     bool
 	}
 
 	tests := []test{
-		{name: "one printer", printersToCreate: 1},
-		{name: "three printers", printersToCreate: 3},
+		{name: "one printer", printersToCreate: 1, loadFilament: false},
+		{name: "three printers", printersToCreate: 3, loadFilament: true},
 	}
 
 	for _, test := range tests {
@@ -84,6 +86,45 @@ func TestClient_TestPrinterCreationAndRetrieval(t *testing.T) {
 					assert.Equal(t, printerID, printer.ID)
 					assert.Equal(t, TestName, printer.Alias)
 					assert.Equal(t, TestEndpoint, printer.Endpoint)
+					assert.Empty(t, printer.LoadedSpoolID)
+				}
+			})
+
+			t.Run("Create and Load filament", func(t *testing.T) {
+				printerPage, err := client.Printers(nil)
+
+				if err != nil {
+					t.Error(err)
+				}
+
+				for _, printerID := range printerPage.PrinterIds {
+					brandID, err := client.CreateFilamentBrand(TestBrand)
+
+					if err != nil {
+						t.Error(err)
+						continue
+					}
+
+					spoolID, err := client.CreateFilamentSpool(brandID)
+
+					if err != nil {
+						t.Error(err)
+						continue
+					}
+
+					client.LoadSpoolInPrinter(printerID, spoolID)
+
+					printer, err := client.Printer(printerID)
+
+					if err != nil {
+						t.Error(err)
+					}
+
+					assert.Equal(t, TestAPIKey, printer.APIKey)
+					assert.Equal(t, printerID, printer.ID)
+					assert.Equal(t, TestName, printer.Alias)
+					assert.Equal(t, TestEndpoint, printer.Endpoint)
+					assert.Equal(t, spoolID, printer.LoadedSpoolID)
 				}
 			})
 		})

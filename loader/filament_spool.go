@@ -12,7 +12,7 @@ import (
 func LoadFilamentSpool(ctx context.Context, filamentBrandID string) (printdb.FilamentSpool, error) {
 	var filamentSpool printdb.FilamentSpool
 
-	ldr, err := extract(ctx, filamentSpoolLoaderKey)
+	ldr, err := extract(ctx, FilamentSpoolLoaderKey)
 	if err != nil {
 		return filamentSpool, err
 	}
@@ -68,7 +68,7 @@ type filamentSpoolsLoader struct {
 	get filamentSpoolsGetter
 }
 
-func newFilamentSpoolLoader(client filamentSpoolGetter) dataloader.BatchFunc {
+func NewFilamentSpoolLoader(client filamentSpoolGetter) dataloader.BatchFunc {
 	return filamentSpoolLoader{get: client}.loadBatch
 }
 

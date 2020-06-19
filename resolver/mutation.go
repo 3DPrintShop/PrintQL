@@ -109,3 +109,13 @@ func (r SchemaResolver) UploadComponent(ctx context.Context, args uploadComponen
 func (r SchemaResolver) FilamentActions(ctx context.Context) (*FilamentActionsResolver, error) {
 	return NewFilamentActionsResolver()
 }
+
+// PrinterActionArgs are the arguments passed in to the printer actions mutations.
+type PrinterActionArgs struct {
+	PrinterID *graphql.ID
+}
+
+// PrinterActions returns a resolver for a set of mutations that can be taken on a printer.
+func (r SchemaResolver) PrinterActions(ctx context.Context, args PrinterActionArgs) (*PrinterActionsResolver, error) {
+	return NewPrinterActionsResolver(NewPrinterActionsArgs{PrinterID: args.PrinterID})
+}
