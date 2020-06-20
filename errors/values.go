@@ -1,7 +1,7 @@
 package errors
 
 var (
-	// Unable to resolve is the standard message given when a value can't be resolved within the graphql schema.
+	// UnableToResolve is the standard message given when a value can't be resolved within the graphql schema.
 	UnableToResolve = New("unable to resolve")
 )
 

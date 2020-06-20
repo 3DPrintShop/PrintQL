@@ -68,6 +68,7 @@ type filamentSpoolsLoader struct {
 	get filamentSpoolsGetter
 }
 
+// NewFilamentSpoolLoader creates a new dataloader.BatchFun to load filament spools.
 func NewFilamentSpoolLoader(client filamentSpoolGetter) dataloader.BatchFunc {
 	return filamentSpoolLoader{get: client}.loadBatch
 }

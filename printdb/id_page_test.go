@@ -53,7 +53,7 @@ func TestClient_TestIDPage(t *testing.T) {
 				err := context.db.View(func(tx *bolt.Tx) error {
 					totalIdentifiers := 0
 
-					idPage, err := printdb.GetIdsFromBucket(tx.Bucket([]byte(testBucket)), nil, test.pageSize)
+					idPage, err := printdb.GetIDsFromBucket(tx.Bucket([]byte(testBucket)), nil, test.pageSize)
 					for {
 						if err != nil {
 							t.Error(err)
@@ -74,7 +74,7 @@ func TestClient_TestIDPage(t *testing.T) {
 						if idPage.NextPage == nil {
 							break
 						}
-						idPage, err = printdb.GetIdsFromBucket(tx.Bucket([]byte(testBucket)), idPage.NextPage, test.pageSize)
+						idPage, err = printdb.GetIDsFromBucket(tx.Bucket([]byte(testBucket)), idPage.NextPage, test.pageSize)
 					}
 
 					assert.Equal(t, test.identifiersToCreate, totalIdentifiers)

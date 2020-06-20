@@ -8,7 +8,8 @@ import (
 	"sync"
 )
 
-func LoadMedia(ctx context.Context, componentId string) (printdb.Image, error) {
+// LoadMedia loads media using the loader associated with the context.
+func LoadMedia(ctx context.Context, mediaID string) (printdb.Image, error) {
 	var media printdb.Image
 
 	ldr, err := extract(ctx, MediaLoaderKey)
@@ -16,7 +17,7 @@ func LoadMedia(ctx context.Context, componentId string) (printdb.Image, error) {
 		return media, err
 	}
 
-	data, err := ldr.Load(ctx, dataloader.StringKey(componentId))()
+	data, err := ldr.Load(ctx, dataloader.StringKey(mediaID))()
 	if err != nil {
 		return media, err
 	}
@@ -30,13 +31,14 @@ func LoadMedia(ctx context.Context, componentId string) (printdb.Image, error) {
 }
 
 type mediaGetter interface {
-	Image(mediaId string) (printdb.Image, error)
+	Image(mediaID string) (printdb.Image, error)
 }
 
 type mediaLoader struct {
 	get mediaGetter
 }
 
+// NewMediaLoader creates a dataloader.BatchFunc for loading media.
 func NewMediaLoader(client mediaGetter) dataloader.BatchFunc {
 	return mediaLoader{get: client}.loadBatch
 }

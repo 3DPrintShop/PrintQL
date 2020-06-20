@@ -49,7 +49,7 @@ func TestClient_TestImageCreationAndRetrieval(t *testing.T) {
 					t.Error(err)
 				}
 
-				assert.Equal(t, test.imagesToCreate, len(imagePage.ImageIDs))
+				assert.Equal(t, test.imagesToCreate, len(imagePage.IDs))
 			})
 
 			t.Run("Get Each Image", func(t *testing.T) {
@@ -59,7 +59,7 @@ func TestClient_TestImageCreationAndRetrieval(t *testing.T) {
 					t.Error(err)
 				}
 
-				for _, imageID := range imagePage.ImageIDs {
+				for _, imageID := range imagePage.IDs {
 					image, err := client.Image(imageID)
 
 					if err != nil {

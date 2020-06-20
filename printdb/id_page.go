@@ -10,21 +10,22 @@ type IdentifierPage struct {
 	NextPage *string
 }
 
-func (c *Client) GetIdsFromBaseBucket(bucketName string, startID *string, pageSize *int) (IdentifierPage, error) {
+// GetIDsFromBaseBucket is a helper function to get the identifiers from a bucket that exists on the base level of the database.
+func (c *Client) GetIDsFromBaseBucket(bucketName string, startID *string, pageSize *int) (IdentifierPage, error) {
 	var idPage IdentifierPage
 	var err error
 
 	err = c.db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(bucketName))
-		idPage, err = GetIdsFromBucket(b, startID, pageSize)
+		idPage, err = GetIDsFromBucket(b, startID, pageSize)
 		return err
 	})
 
 	return idPage, err
 }
 
-// GetIdsFromBucket gets a list of ids from a bucket.
-func GetIdsFromBucket(bucket *bolt.Bucket, startID *string, pageSize *int) (IdentifierPage, error) {
+// GetIDsFromBucket gets a list of ids from a bucket.
+func GetIDsFromBucket(bucket *bolt.Bucket, startID *string, pageSize *int) (IdentifierPage, error) {
 	var ids []string
 
 	if bucket == nil {

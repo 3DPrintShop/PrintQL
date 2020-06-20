@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 )
 
+// Component is something you can build that is a piece of a project.
 type Component struct {
 	ID       string
 	Name     string
@@ -13,18 +14,21 @@ type Component struct {
 	Projects ComponentProjectPage
 }
 
+// ComponentPage is a page of identifiers for components.
 type ComponentPage struct {
 	ComponentIds []string
 	NextKey      *string
 }
 
+// ComponentProjectPage is a paginated list of project ids that a component belongs to.
 type ComponentProjectPage struct {
-	ComponentId string
+	ComponentID string
 	NextPage    *string
 	ProjectIds  []string
 }
 
-func (c *Client) Component(componentId string) (Component, error) {
+// Component retrieves a component based on componentID.
+func (c *Client) Component(componentID string) (Component, error) {
 	var component Component
 
 	err := c.db.View(func(tx *bolt.Tx) error {
@@ -32,14 +36,14 @@ func (c *Client) Component(componentId string) (Component, error) {
 		if b == nil {
 			return fmt.Errorf("database not setup")
 		}
-		pv := b.Bucket([]byte(componentId))
+		pv := b.Bucket([]byte(componentID))
 
 		if pv == nil {
 			return fmt.Errorf("project by that id does not exist")
 		}
 
 		component = Component{
-			ID:   componentId,
+			ID:   componentID,
 			Name: string(pv.Get([]byte(Name))),
 			Type: string(pv.Get([]byte(Type))),
 		}
@@ -51,21 +55,22 @@ func (c *Client) Component(componentId string) (Component, error) {
 		return component, err
 	}
 
-	projects, err := c.GetProjectsForComponent(componentId)
+	projects, err := c.GetProjectsForComponent(componentID)
 	component.Projects = projects
 
 	return component, err
 }
 
-func (c *Client) Components(pageId *string) (ComponentPage, error) {
+// Components gets a paginated list of component IDs starting at pageID.
+func (c *Client) Components(pageID *string) (ComponentPage, error) {
 	var componentIds []string
 
 	err := c.db.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(ComponentBucket))
 		c := b.Cursor()
 
-		if pageId != nil {
-			c.Seek([]byte(*pageId))
+		if pageID != nil {
+			c.Seek([]byte(*pageID))
 		}
 
 		for k, _ := c.First(); k != nil; k, _ = c.Next() {
@@ -78,11 +83,13 @@ func (c *Client) Components(pageId *string) (ComponentPage, error) {
 	return ComponentPage{ComponentIds: componentIds, NextKey: nil}, err
 }
 
+// NewComponentRequest is the required data to create a new component.
 type NewComponentRequest struct {
 	Name string
 	Type string
 }
 
+// CreateComponent creates a new component based on the data in request, and returns an ID for the created component.
 func (c *Client) CreateComponent(request NewComponentRequest) (string, error) {
 	id := uuid.New()
 	err := c.db.Update(func(tx *bolt.Tx) error {
@@ -106,18 +113,20 @@ func (c *Client) CreateComponent(request NewComponentRequest) (string, error) {
 	return id.String(), err
 }
 
-func (c *Client) GetProjectsForComponent(projectId string) (ComponentProjectPage, error) {
+// GetProjectsForComponent returns a paginated list of project IDs that a component is part of.
+func (c *Client) GetProjectsForComponent(componentID string) (ComponentProjectPage, error) {
 	return c.GetNextComponentProjectPage(ComponentProjectPage{
-		ComponentId: projectId,
+		ComponentID: componentID,
 	})
 }
 
+// GetNextComponentProjectPage returns a paginated list of project IDs that a component is part of.
 func (c *Client) GetNextComponentProjectPage(request ComponentProjectPage) (ComponentProjectPage, error) {
 	var projectIds []string
 
 	err := c.db.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(ComponentBucket))
-		cb := b.Bucket([]byte(request.ComponentId))
+		cb := b.Bucket([]byte(request.ComponentID))
 		cpb := cb.Bucket([]byte(ComponentProjectBucket))
 
 		if cpb == nil {

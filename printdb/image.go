@@ -6,13 +6,15 @@ import (
 	"github.com/google/uuid"
 )
 
+// Image represents an image that can be displayed to the user
 type Image struct {
 	ID      string
 	AltText string
 	Type    string
 }
 
-func (c *Client) Image(componentId string) (Image, error) {
+// Image retrieves a an image corresponding with imageID.
+func (c *Client) Image(imageID string) (Image, error) {
 	var image Image
 
 	err := c.db.View(func(tx *bolt.Tx) error {
@@ -20,14 +22,14 @@ func (c *Client) Image(componentId string) (Image, error) {
 		if b == nil {
 			return fmt.Errorf("database not setup")
 		}
-		pv := b.Bucket([]byte(componentId))
+		pv := b.Bucket([]byte(imageID))
 
 		if pv == nil {
 			return fmt.Errorf("project by that id does not exist")
 		}
 
 		image = Image{
-			ID:      componentId,
+			ID:      imageID,
 			AltText: string(pv.Get([]byte(AltText))),
 			Type:    string(pv.Get([]byte(Type))),
 		}
@@ -37,38 +39,18 @@ func (c *Client) Image(componentId string) (Image, error) {
 	return image, err
 }
 
-type ImagePage struct {
-	ImageIDs []string
-	nextKey  *string
+// GetImages returns a paginated list of image IDs.
+func (c *Client) GetImages(pageID *string) (IdentifierPage, error) {
+	return c.GetIDsFromBaseBucket(ImageBucket, pageID, nil)
 }
 
-func (c *Client) GetImages(pageId *string) (ImagePage, error) {
-
-	var imageIDs []string
-
-	err := c.db.Update(func(tx *bolt.Tx) error {
-		b := tx.Bucket([]byte(ImageBucket))
-		c := b.Cursor()
-
-		if pageId != nil {
-			c.Seek([]byte(*pageId))
-		}
-
-		for k, _ := c.First(); k != nil; k, _ = c.Next() {
-			imageIDs = append(imageIDs, string(k))
-		}
-
-		return nil
-	})
-
-	return ImagePage{ImageIDs: imageIDs, nextKey: nil}, err
-}
-
+// NewImageRequest is the data needed to create a new image in the database.
 type NewImageRequest struct {
 	AltText *string
 	Type    string
 }
 
+// CreateImage creates an image based on the data in request, and returns an ID to that image.
 func (c *Client) CreateImage(request NewImageRequest) (string, error) {
 	id := uuid.New()
 	err := c.db.Update(func(tx *bolt.Tx) error {

@@ -7,8 +7,10 @@ import (
 	pkgerrors "github.com/pkg/errors"
 )
 
+// Errors ia a explicit type of a slice of errors.
 type Errors []error
 
+// Err returns a single error that represents all of the errors within the collection
 func (e Errors) Err() error {
 	if len(e) == 0 {
 		return nil
@@ -17,6 +19,7 @@ func (e Errors) Err() error {
 	return e
 }
 
+// Returns a string that represents all of the errors within the collection
 func (e Errors) Error() string {
 	var buf bytes.Buffer
 
@@ -37,15 +40,17 @@ func (e Errors) Error() string {
 	return buf.String()
 }
 
+// Slice returns a slice of errors.
 func (e Errors) Slice() []error {
 	return []error(e)
 }
 
-// This is convenience method so we don't have to fight with package imports.
+// New is a convenience method for creating new error types
 func New(message string) error {
 	return pkgerrors.New(message)
 }
 
+// Errorf wraps pkgerrors Errorf
 func Errorf(format string, args ...interface{}) error {
 	return pkgerrors.Errorf(format, args...)
 }

@@ -11,6 +11,7 @@ type indexedCauser interface {
 	Cause() error
 }
 
+// Expand resolver errors which have previously been collapsed to a single error.
 func Expand(errs []*graphql.QueryError) []*graphql.QueryError {
 	expanded := make([]*graphql.QueryError, 0, len(errs))
 

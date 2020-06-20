@@ -13,6 +13,8 @@ import (
 	graphql "github.com/graph-gophers/graphql-go"
 )
 
+type key string
+
 // The GraphQL handler handles GraphQL API requests over HTTP.
 // It can handle batched requests as sent by the apollo-client.
 type GraphQL struct {

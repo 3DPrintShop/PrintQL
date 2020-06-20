@@ -8,7 +8,8 @@ import (
 	"sync"
 )
 
-func LoadPrinter(ctx context.Context, printerId string) (printdb.Printer, error) {
+// LoadPrinter loads a printer by the id printerID.
+func LoadPrinter(ctx context.Context, printerID string) (printdb.Printer, error) {
 	var printer printdb.Printer
 
 	ldr, err := extract(ctx, printerLoaderKey)
@@ -16,7 +17,7 @@ func LoadPrinter(ctx context.Context, printerId string) (printdb.Printer, error)
 		return printer, err
 	}
 
-	data, err := ldr.Load(ctx, dataloader.StringKey(printerId))()
+	data, err := ldr.Load(ctx, dataloader.StringKey(printerID))()
 	if err != nil {
 		return printer, err
 	}
@@ -29,6 +30,7 @@ func LoadPrinter(ctx context.Context, printerId string) (printdb.Printer, error)
 	return printer, nil
 }
 
+// LoadPrinters loads a paginated list of printers starting from printerPageID.
 func LoadPrinters(ctx context.Context, printerPageID string) ([]printdb.Printer, error) {
 	var printers []printdb.Printer
 
@@ -42,12 +44,12 @@ func LoadPrinters(ctx context.Context, printerPageID string) ([]printdb.Printer,
 		return printers, err
 	}
 
-	printerPage, ok := data.(printdb.PrinterPage)
+	printerPage, ok := data.(printdb.IdentifierPage)
 	if !ok {
 		return printers, errors.WrongType(printerPage, data)
 	}
 
-	for _, v := range printerPage.PrinterIds {
+	for _, v := range printerPage.IDs {
 		printer, err := LoadPrinter(ctx, v)
 		if err != nil {
 			return printers, err
@@ -59,11 +61,11 @@ func LoadPrinters(ctx context.Context, printerPageID string) ([]printdb.Printer,
 }
 
 type printerPageGetter interface {
-	Printers(pageId *string) (printdb.PrinterPage, error)
+	Printers(pageID *string) (printdb.IdentifierPage, error)
 }
 
 type printerGetter interface {
-	Printer(printerId string) (printdb.Printer, error)
+	Printer(printerID string) (printdb.Printer, error)
 }
 
 type printerPageLoader struct {

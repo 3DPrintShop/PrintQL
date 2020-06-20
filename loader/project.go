@@ -8,7 +8,8 @@ import (
 	"sync"
 )
 
-func LoadProject(ctx context.Context, projectId string) (printdb.Project, error) {
+// LoadProject loads a project from PrintDB through the loader attached to the context.
+func LoadProject(ctx context.Context, projectID string) (printdb.Project, error) {
 	var project printdb.Project
 
 	ldr, err := extract(ctx, ProjectLoaderKey)
@@ -16,7 +17,7 @@ func LoadProject(ctx context.Context, projectId string) (printdb.Project, error)
 		return project, err
 	}
 
-	data, err := ldr.Load(ctx, dataloader.StringKey(projectId))()
+	data, err := ldr.Load(ctx, dataloader.StringKey(projectID))()
 	if err != nil {
 		return project, err
 	}
@@ -29,6 +30,7 @@ func LoadProject(ctx context.Context, projectId string) (printdb.Project, error)
 	return project, nil
 }
 
+// LoadProjects loads a a paginated list of project IDs from PrintDB through the loader attached to the context.
 func LoadProjects(ctx context.Context, projectPageID string) ([]printdb.Project, error) {
 	var projects []printdb.Project
 
@@ -59,11 +61,11 @@ func LoadProjects(ctx context.Context, projectPageID string) ([]printdb.Project,
 }
 
 type projectPageGetter interface {
-	GetProjects(pageId *string) (printdb.ProjectPage, error)
+	GetProjects(pageID *string) (printdb.ProjectPage, error)
 }
 
 type projectGetter interface {
-	GetProject(projectId string) (printdb.Project, error)
+	GetProject(projectID string) (printdb.Project, error)
 }
 
 type projectPageLoader struct {
@@ -74,10 +76,12 @@ type projectLoader struct {
 	get projectGetter
 }
 
+// NewProjectLoader returns a dataloader.BatchFunc for loading a project.
 func NewProjectLoader(client projectGetter) dataloader.BatchFunc {
 	return projectLoader{get: client}.loadBatch
 }
 
+// NewProjectPageLoader returns a dataloader.BatchFunc for loading a list of project IDs.
 func NewProjectPageLoader(client projectPageGetter) dataloader.BatchFunc {
 	return projectPageLoader{get: client}.loadBatch
 }

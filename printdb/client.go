@@ -37,10 +37,12 @@ const (
 	RemainingWeight     = "RemainingWeight"
 )
 
+// Client represents the printDB client.
 type Client struct {
 	db *bolt.DB
 }
 
+// NewClient creates a new client for accessing PrintDB
 func NewClient(db *bolt.DB) (*Client, error) {
 	return &Client{db: db}, insureBuckets(db)
 }

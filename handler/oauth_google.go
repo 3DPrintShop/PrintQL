@@ -27,16 +27,18 @@ var googleOauthConfig = &oauth2.Config{
 //TODO: Load JWT Secret key from database on load, prevent people from keeping this crappy default
 var jwtSecret []byte = []byte("thisisahorriblesecretkey")
 
-const oauthGoogleUrlAPI = "https://www.googleapis.com/oauth2/v2/userinfo?access_token="
+const oauthGoogleURLAPI = "https://www.googleapis.com/oauth2/v2/userinfo?access_token="
 
+// UserData represents the data we know about a user that has logged in via google.
 type UserData struct {
-	Id          string
-	Email       string
-	Name        string
-	Given_name  string
-	Family_name string
+	ID         string `json:Id`
+	Email      string
+	Name       string
+	GivenName  string `json:Given_Name`
+	FamilyName string `json:Family_Name`
 }
 
+// OauthGoogleLogin creates a cookie with a state then redirects the user to google's oauth system with that state.
 func OauthGoogleLogin(w http.ResponseWriter, r *http.Request) {
 
 	// Create oauthState cookie
@@ -50,6 +52,7 @@ func OauthGoogleLogin(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, u, http.StatusTemporaryRedirect)
 }
 
+// OauthGoogleCallback is the handler for handling the callback from google's oauth system.
 func OauthGoogleCallback(w http.ResponseWriter, r *http.Request) {
 	// Read oauthState from Cookie
 	oauthState, _ := r.Cookie("oauthstate")
@@ -71,7 +74,7 @@ func OauthGoogleCallback(w http.ResponseWriter, r *http.Request) {
 	json.Unmarshal(data, &userData)
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"id":    userData.Id,
+		"id":    userData.ID,
 		"email": userData.Email,
 	})
 	tokenString, _ := token.SignedString(jwtSecret)
@@ -100,7 +103,7 @@ func getUserDataFromGoogle(code string) ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("code exchange wrong: %s", err.Error())
 	}
-	response, err := http.Get(oauthGoogleUrlAPI + token.AccessToken)
+	response, err := http.Get(oauthGoogleURLAPI + token.AccessToken)
 	if err != nil {
 		return nil, fmt.Errorf("failed getting user info: %s", err.Error())
 	}
@@ -112,11 +115,13 @@ func getUserDataFromGoogle(code string) ([]byte, error) {
 	return contents, nil
 }
 
+// User is the data we store in the JWT token representing the logged in user.
 type User struct {
-	Id    string
+	ID    string
 	Email string
 }
 
+// AddUserContext adds the user's data from their session cookie to the context for use within graphql.
 func AddUserContext(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
@@ -131,19 +136,19 @@ func AddUserContext(next http.Handler) http.Handler {
 
 			if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 				user := User{
-					Id:    claims["id"].(string),
+					ID:    claims["id"].(string),
 					Email: claims["email"].(string),
 				}
 
-				ctx := context.WithValue(r.Context(), "user", &user)
+				ctx := context.WithValue(r.Context(), key("user"), &user)
 				next.ServeHTTP(w, r.WithContext(ctx))
 			} else {
-				ctx := context.WithValue(r.Context(), "user", &User{})
+				ctx := context.WithValue(r.Context(), key("user"), &User{})
 				next.ServeHTTP(w, r.WithContext(ctx))
 			}
 
 		} else {
-			ctx := context.WithValue(r.Context(), "user", &User{})
+			ctx := context.WithValue(r.Context(), key("user"), &User{})
 			next.ServeHTTP(w, r.WithContext(ctx))
 		}
 	})

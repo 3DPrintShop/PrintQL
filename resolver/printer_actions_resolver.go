@@ -34,7 +34,12 @@ func (r PrinterActionsResolver) LoadSpool(ctx context.Context, args NewLoadSpool
 	if r.printerID == nil {
 		return nil, fmt.Errorf("attempting to call load spool without a printer id")
 	}
+
 	err := client.LoadSpoolInPrinter(string(*r.printerID), args.SpoolID)
+	if err != nil {
+		return nil, err
+	}
+
 	spoolResolver, err := NewFilamentSpool(ctx, NewFilamentSpoolArgs{ID: args.SpoolID})
 	return spoolResolver, err
 }

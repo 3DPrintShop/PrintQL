@@ -65,7 +65,7 @@ func TestClient_TestPrinterCreationAndRetrieval(t *testing.T) {
 					t.Error(err)
 				}
 
-				assert.Equal(t, test.printersToCreate, len(printerPage.PrinterIds))
+				assert.Equal(t, test.printersToCreate, len(printerPage.IDs))
 			})
 
 			t.Run("Get Each Printer", func(t *testing.T) {
@@ -75,7 +75,7 @@ func TestClient_TestPrinterCreationAndRetrieval(t *testing.T) {
 					t.Error(err)
 				}
 
-				for _, printerID := range printerPage.PrinterIds {
+				for _, printerID := range printerPage.IDs {
 					printer, err := client.Printer(printerID)
 
 					if err != nil {
@@ -97,7 +97,7 @@ func TestClient_TestPrinterCreationAndRetrieval(t *testing.T) {
 					t.Error(err)
 				}
 
-				for _, printerID := range printerPage.PrinterIds {
+				for _, printerID := range printerPage.IDs {
 					brandID, err := client.CreateFilamentBrand(TestBrand)
 
 					if err != nil {

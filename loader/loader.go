@@ -22,6 +22,7 @@ const (
 	filamentSpoolsLoaderKey key = "filamentSpools"
 )
 
+// Client is an interface composed of all of the interfaces required by the loaders.
 type Client interface {
 	printerGetter
 	printerPageGetter
@@ -36,6 +37,7 @@ type Client interface {
 	filamentSpoolsGetter
 }
 
+// Initialize creates a loader lookup collection
 func Initialize(boltClient Client) Collection {
 	return Collection{
 		lookup: map[key]dataloader.BatchFunc{
@@ -54,10 +56,12 @@ func Initialize(boltClient Client) Collection {
 	}
 }
 
+// Collection represents a collection of loaders
 type Collection struct {
 	lookup map[key]dataloader.BatchFunc
 }
 
+// Attach attaches the loaders in the collection to the context.
 func (c Collection) Attach(ctx context.Context) context.Context {
 	for k, batchFn := range c.lookup {
 		ctx = context.WithValue(ctx, k, dataloader.NewBatchedLoader(batchFn))

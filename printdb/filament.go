@@ -77,7 +77,7 @@ type FilamentBrandPage struct {
 
 // GetFilamentBrands returns a paginated set of identifiers for filament brands, and takes in an identifier to get subsequent pages, that identifier is returned from this function.
 func (c *Client) GetFilamentBrands(nextPageID *string) (IdentifierPage, error) {
-	return c.GetIdsFromBaseBucket(FilamentBrandBucket, nil, nil)
+	return c.GetIDsFromBaseBucket(FilamentBrandBucket, nil, nil)
 }
 
 // GetFilamentBrand returns details about a filament brand given it's id.
@@ -129,7 +129,7 @@ func (c *Client) CreateFilamentSpool(brandID string) (string, error) {
 
 // GetFilamentSpools gets a paginated list of filament spool ids.
 func (c *Client) GetFilamentSpools(nextPageID *string) (IdentifierPage, error) {
-	return c.GetIdsFromBaseBucket(FilamentSpoolBucket, nextPageID, nil)
+	return c.GetIDsFromBaseBucket(FilamentSpoolBucket, nextPageID, nil)
 }
 
 // GetFilamentSpool returns details about a filament spool given it's id.

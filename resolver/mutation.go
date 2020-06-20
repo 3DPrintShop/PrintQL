@@ -2,6 +2,7 @@ package resolver
 
 import (
 	"context"
+	"fmt"
 	"github.com/3DPrintShop/PrintQL/printdb"
 	"github.com/boltdb/bolt"
 	"github.com/graph-gophers/graphql-go"
@@ -59,7 +60,13 @@ type CreateProjectQueryArgs struct {
 
 // CreateProject creates a new project and returns a resolver to that project.
 func (r SchemaResolver) CreateProject(ctx context.Context, args CreateProjectQueryArgs) (*ProjectResolver, error) {
-	client := ctx.Value("client").(*printdb.Client)
+	clientObj := ctx.Value("client")
+
+	if clientObj == nil {
+		return nil, fmt.Errorf("failed to get client from context")
+	}
+
+	client := clientObj.(*printdb.Client)
 
 	projectID, err := client.CreateProject(args.Name)
 

@@ -4,5 +4,5 @@ type FilamentActions {
     createFilamentBrand(name: String!): FilamentBrand
 
     # CreateFilamentSpool creates a spool of filament of the type specified by brandID
-    createFilamentSpool(brandID: ID): FilamentSpool
+    createFilamentSpool(brandID: ID!): FilamentSpool
 }

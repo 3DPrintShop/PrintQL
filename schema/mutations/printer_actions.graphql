@@ -1,0 +1,5 @@
+# PrinterActions represents the actions that can be taken on a printer
+type PrinterActions {
+    # loadSpool sets the loaded filament spool
+    loadSpool(spoolID: ID!): FilamentSpool
+}

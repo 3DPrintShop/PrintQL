@@ -12,4 +12,8 @@ type Mutation {
     uploadImageToProject(request: UploadImageRequest!, projectId: ID!): ID
     # Creates a new brand of filament
     createFilamentBrand(name: String!): ID
+    # A set of actions that can be taken on a printer
+    printerActions(printerID: ID!): PrinterActions
+    # A set of actions that can be taken on filament
+    filamentActions: FilamentActions
 }

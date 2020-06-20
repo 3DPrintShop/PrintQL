@@ -8,7 +8,8 @@ import (
 	"sync"
 )
 
-func LoadComponent(ctx context.Context, componentId string) (printdb.Component, error) {
+// LoadComponent loads a component using the loader attached to the context.
+func LoadComponent(ctx context.Context, componentID string) (printdb.Component, error) {
 	var component printdb.Component
 
 	ldr, err := extract(ctx, ComponentLoaderKey)
@@ -16,7 +17,7 @@ func LoadComponent(ctx context.Context, componentId string) (printdb.Component, 
 		return component, err
 	}
 
-	data, err := ldr.Load(ctx, dataloader.StringKey(componentId))()
+	data, err := ldr.Load(ctx, dataloader.StringKey(componentID))()
 	if err != nil {
 		return component, err
 	}
@@ -29,6 +30,7 @@ func LoadComponent(ctx context.Context, componentId string) (printdb.Component, 
 	return component, nil
 }
 
+// LoadComponents loads a list of components using the loaders attached to the context.
 func LoadComponents(ctx context.Context, componentPageID string) ([]printdb.Component, error) {
 	var components []printdb.Component
 
@@ -59,11 +61,11 @@ func LoadComponents(ctx context.Context, componentPageID string) ([]printdb.Comp
 }
 
 type componentPageGetter interface {
-	Components(pageId *string) (printdb.ComponentPage, error)
+	Components(pageID *string) (printdb.ComponentPage, error)
 }
 
 type componentGetter interface {
-	Component(componentId string) (printdb.Component, error)
+	Component(componentID string) (printdb.Component, error)
 }
 
 type componentPageLoader struct {
@@ -74,6 +76,7 @@ type componentLoader struct {
 	get componentGetter
 }
 
+// NewComponentLoader creates a new dataloader.BatchFunc that loads components.
 func NewComponentLoader(client componentGetter) dataloader.BatchFunc {
 	return componentLoader{get: client}.loadBatch
 }

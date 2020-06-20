@@ -18,17 +18,20 @@ func NewFilamentActionsResolver() (*FilamentActionsResolver, error) {
 }
 
 // CreateFilamentBrand creates a new brand of filament.
-func (r FilamentActionsResolver) CreateFilamentBrand(ctx context.Context, args createFilamentBrandArgs) (*graphql.ID, error) {
+func (r FilamentActionsResolver) CreateFilamentBrand(ctx context.Context, args createFilamentBrandArgs) (*FilamentBrandResolver, error) {
 	client := ctx.Value("client").(*printdb.Client)
 
 	filamentBrandID, err := client.CreateFilamentBrand(args.Name)
-	brandID := graphql.ID(filamentBrandID)
 
-	return &brandID, err
+	if err != nil {
+		return nil, err
+	}
+
+	return NewFilamentBrand(ctx, NewFilamentBrandArgs{ID: filamentBrandID})
 }
 
 type createFilamentSpoolArgs struct {
-	BrandID graphql.ID
+	BrandID *graphql.ID
 }
 
 // CreateFilamentSpool creates a new spool of filament.
@@ -37,7 +40,7 @@ func (r FilamentActionsResolver) CreateFilamentSpool(ctx context.Context, args c
 
 	client := ctx.Value("client").(*printdb.Client)
 
-	spoolID, err := client.CreateFilamentSpool(string(args.BrandID))
+	spoolID, err := client.CreateFilamentSpool(string(*args.BrandID))
 	if err != nil {
 		errs = append(errs, err)
 	}
