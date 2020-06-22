@@ -1,0 +1,5 @@
+type PrintHead {
+    actual: Float
+    target: Float
+    name: String!
+}

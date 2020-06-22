@@ -12,16 +12,17 @@ import (
 
 // CreatePrintersQueryArgs are the parameters passed in as part of a create printer query that specify details about the printer.
 type CreatePrintersQueryArgs struct {
-	Name     string
-	APIKey   string
-	Endpoint string
+	Name            string
+	APIKey          string
+	Endpoint        string
+	IntegrationType string
 }
 
 // CreatePrinter creates a printer and returns a resolver to the newly created printer.
 func (r SchemaResolver) CreatePrinter(ctx context.Context, args CreatePrintersQueryArgs) (*PrinterResolver, error) {
 	client := ctx.Value("client").(*printdb.Client)
 
-	printerID, err := client.CreatePrinter(printdb.NewPrinterRequest{Endpoint: args.Endpoint, Name: args.Name, APIKey: args.APIKey})
+	printerID, err := client.CreatePrinter(printdb.NewPrinterRequest{Endpoint: args.Endpoint, Name: args.Name, APIKey: args.APIKey, IntegrationType: args.IntegrationType})
 
 	if err != nil {
 		return nil, err

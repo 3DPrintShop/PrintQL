@@ -9,17 +9,19 @@ import (
 type key string
 
 const (
-	printerLoaderKey        key = "printer"
-	printerPageLoaderKey    key = "printerPage"
-	ProjectLoaderKey        key = "project"
-	ProjectPageLoaderKey    key = "projectPage"
-	ComponentLoaderKey      key = "component"
-	componentPageLoaderKey  key = "componentPage"
-	MediaLoaderKey          key = "media"
-	FilamentBrandLoaderKey  key = "filamentBrand"
-	FilamentBrandsLoaderKey key = "filamentBrands"
-	FilamentSpoolLoaderKey  key = "filamentSpool"
-	filamentSpoolsLoaderKey key = "filamentSpools"
+	printerLoaderKey          key = "printer"
+	printerPageLoaderKey      key = "printerPage"
+	ProjectLoaderKey          key = "project"
+	ProjectPageLoaderKey      key = "projectPage"
+	ComponentLoaderKey        key = "component"
+	componentPageLoaderKey    key = "componentPage"
+	MediaLoaderKey            key = "media"
+	FilamentBrandLoaderKey    key = "filamentBrand"
+	FilamentBrandsLoaderKey   key = "filamentBrands"
+	FilamentSpoolLoaderKey    key = "filamentSpool"
+	filamentSpoolsLoaderKey   key = "filamentSpools"
+	octoprintPrinterLoaderKey key = "octoprintPrinter"
+	octoprintJobLoaderKey     key = "octoprintJob"
 )
 
 // Client is an interface composed of all of the interfaces required by the loaders.
@@ -41,17 +43,19 @@ type Client interface {
 func Initialize(boltClient Client) Collection {
 	return Collection{
 		lookup: map[key]dataloader.BatchFunc{
-			printerLoaderKey:        newPrinterLoader(boltClient),
-			printerPageLoaderKey:    newPrinterPageLoader(boltClient),
-			ProjectLoaderKey:        NewProjectLoader(boltClient),
-			ProjectPageLoaderKey:    NewProjectPageLoader(boltClient),
-			ComponentLoaderKey:      NewComponentLoader(boltClient),
-			componentPageLoaderKey:  newComponentPageLoader(boltClient),
-			MediaLoaderKey:          NewMediaLoader(boltClient),
-			FilamentBrandLoaderKey:  NewFilamentBrandLoader(boltClient),
-			FilamentBrandsLoaderKey: NewFilamentBrandsLoader(boltClient),
-			FilamentSpoolLoaderKey:  NewFilamentSpoolLoader(boltClient),
-			filamentSpoolsLoaderKey: newFilamentSpoolsLoader(boltClient),
+			printerLoaderKey:          newPrinterLoader(boltClient),
+			printerPageLoaderKey:      newPrinterPageLoader(boltClient),
+			octoprintPrinterLoaderKey: newOctoprintPrinterLoader(),
+			ProjectLoaderKey:          NewProjectLoader(boltClient),
+			ProjectPageLoaderKey:      NewProjectPageLoader(boltClient),
+			ComponentLoaderKey:        NewComponentLoader(boltClient),
+			componentPageLoaderKey:    newComponentPageLoader(boltClient),
+			MediaLoaderKey:            NewMediaLoader(boltClient),
+			FilamentBrandLoaderKey:    NewFilamentBrandLoader(boltClient),
+			FilamentBrandsLoaderKey:   NewFilamentBrandsLoader(boltClient),
+			FilamentSpoolLoaderKey:    NewFilamentSpoolLoader(boltClient),
+			filamentSpoolsLoaderKey:   newFilamentSpoolsLoader(boltClient),
+			octoprintJobLoaderKey:     newOctoprintJobLoader(),
 		},
 	}
 }

@@ -140,15 +140,15 @@ func AddUserContext(next http.Handler) http.Handler {
 					Email: claims["email"].(string),
 				}
 
-				ctx := context.WithValue(r.Context(), key("user"), &user)
+				ctx := context.WithValue(r.Context(), "user", &user)
 				next.ServeHTTP(w, r.WithContext(ctx))
 			} else {
-				ctx := context.WithValue(r.Context(), key("user"), &User{})
+				ctx := context.WithValue(r.Context(), "user", &User{ID: "Test User", Email: "testuser@gmail.com"})
 				next.ServeHTTP(w, r.WithContext(ctx))
 			}
 
 		} else {
-			ctx := context.WithValue(r.Context(), key("user"), &User{})
+			ctx := context.WithValue(r.Context(), "user", &User{ID: "Test User", Email: "testuser@gmail.com"})
 			next.ServeHTTP(w, r.WithContext(ctx))
 		}
 	})

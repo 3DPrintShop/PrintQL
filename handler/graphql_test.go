@@ -159,6 +159,11 @@ func TestGraphQL_TestGraphQL(t *testing.T) {
 			result: "{\"data\":{\"printers\":[]}}",
 		},
 		{
+			name:   "get components",
+			query:  "{\n  components{\n    name,\n    type,\n    projects {\n      name\n    }\n  }\n}",
+			result: "{\"data\":{\"components\":[]}}",
+		},
+		{
 			name:   "create filament brand",
 			query:  "mutation{\n  filamentActions{\n    createFilamentBrand(name: \"Filament brand\"){\n      name\n    }\n  }\n}",
 			result: "{\"data\":{\"filamentActions\":{\"createFilamentBrand\":{\"name\":\"Filament brand\"}}}}",
@@ -167,6 +172,16 @@ func TestGraphQL_TestGraphQL(t *testing.T) {
 			name:   "get filament brands with results",
 			query:  "{\n\tfilamentBrands{\n    startWeight,\n    spoolWeight,\n    name\n  }\n}",
 			result: "{\"data\":{\"filamentBrands\":[{\"startWeight\":0,\"spoolWeight\":0,\"name\":\"Filament brand\"}]}}",
+		},
+		{
+			name:   "create printer",
+			query:  "mutation{\n  createPrinter(name: \"printerName\", apiKey:\"API Key\", endpoint:\"EndPoint\", integrationType:\"Octoprint\"){\n    name,\n    endpoint,    \n    integrationType\n  }\n}",
+			result: "{\"data\":{\"createPrinter\":{\"name\":\"printerName\",\"endpoint\":\"EndPoint\",\"integrationType\":\"Octoprint\"}}}",
+		},
+		{
+			name:   "get printers with results",
+			query:  "{\n\tprinters{\n    name,\n    endpoint,    \n    integrationType,\n  }\n}",
+			result: "{\"data\":{\"printers\":[{\"name\":\"printerName\",\"endpoint\":\"EndPoint\",\"integrationType\":\"Octoprint\"}]}}",
 		},
 	}
 

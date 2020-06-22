@@ -6,11 +6,12 @@ import (
 )
 
 const (
-	PrinterBucket = "Printers"
-	APIKey        = "APIKey"
-	Endpoint      = "Endpoint"
-	Alias         = "Alias"
-	LoadedSpool   = "LoadedSpool"
+	PrinterBucket   = "Printers"
+	APIKey          = "APIKey"
+	Endpoint        = "Endpoint"
+	Alias           = "Alias"
+	LoadedSpool     = "LoadedSpool"
+	IntegrationType = "IntegrationType"
 
 	ProjectBucket = "Projects"
 	Name          = "Name"

@@ -25,7 +25,6 @@ type NewComponentArgs struct {
 // NewComponent returns a new resolver for a component specified by the args passed in.
 func NewComponent(ctx context.Context, args NewComponentArgs) (*ComponentResolver, error) {
 	component, errs := loader.LoadComponent(ctx, args.ID)
-
 	return &ComponentResolver{Component: component}, errs
 }
 

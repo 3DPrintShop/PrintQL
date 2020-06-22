@@ -1,0 +1,7 @@
+# A 3D Printer's print bed
+type PrintBed {
+    # The temperature in celcius for the printer
+    temperature: Float
+    # Target is the target temperature for the printbed
+    target: Float
+}

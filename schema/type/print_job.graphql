@@ -1,0 +1,11 @@
+# PrintJob represents a print run/job
+type PrintJob {
+    # State is a textual representation of the current state of the job, i.e. “Operational”, “Printing”, “Pausing”, “Paused”, “Cancelling”, “Error” or “Offline”.
+    state: String
+    # File Name is the name of the file being printed
+    fileName: String
+    # Print Time is the total time expected to print the file
+    printTime: Float
+    # Elapsed Time is the total time that the print job has been running for
+    elapsedTime: Float
+}

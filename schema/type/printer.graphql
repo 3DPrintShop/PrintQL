@@ -10,4 +10,14 @@ type Printer {
   state: PrinterState
   # End point to use for communicating with the printer
   endpoint: String!
+  # what integration to use for talking with this printer
+  integrationType: String!
+  # Shows what file is loaded for being printed
+  loadedFile: String
+  # bed is the printer's bed
+  bed: PrintBed
+  # returns information about the print head
+  tools: [PrintHead!]
+  # Job is the current active printing job the printer is operating on.
+  job: PrintJob
 }

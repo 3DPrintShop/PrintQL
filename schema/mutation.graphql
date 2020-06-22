@@ -1,7 +1,7 @@
 # Query type representing the possible mutations.
 type Mutation {
     # Creates a new printer
-    createPrinter(name: String!, apiKey: String!, endpoint: String!): Printer
+    createPrinter(name: String!, apiKey: String!, endpoint: String!, integrationType: String!): Printer
     # Deletes the printer specified by the id
     deletePrinter(id: ID!): ID
     # Creates a new project
@@ -13,7 +13,7 @@ type Mutation {
     # Creates a new brand of filament
     createFilamentBrand(name: String!): ID
     # A set of actions that can be taken on a printer
-    printerActions(printerID: ID!): PrinterActions
+    printerActions(printerID: ID): PrinterActions
     # A set of actions that can be taken on filament
     filamentActions: FilamentActions
 }

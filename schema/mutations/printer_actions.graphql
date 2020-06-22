@@ -1,5 +1,18 @@
+enum JobAction {
+    START
+    CANCEL
+    PAUSE
+    RESUME
+}
+
 # PrinterActions represents the actions that can be taken on a printer
 type PrinterActions {
     # loadSpool sets the loaded filament spool
     loadSpool(spoolID: ID!): FilamentSpool
+    # Creates a new printer
+    createPrinter(name: String!, apiKey: String!, endpoint: String!, integrationType: String!): Printer
+    # SelectFile selects a file to be loaded into the printer for analysis and printing
+    selectFile(filePath: String!): String
+    # Send Job Action sends an action to be performed on a job.
+    sendJobAction(action: JobAction): PrintJob
 }

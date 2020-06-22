@@ -8,11 +8,12 @@ import (
 
 // Printer represents a 3d printer.
 type Printer struct {
-	ID            string `json:"id"`
-	Alias         string `json:"alias"`
-	APIKey        string `json:"apiKey"`
-	Endpoint      string `json:"endpoint"`
-	LoadedSpoolID string
+	ID              string `json:"id"`
+	Alias           string `json:"alias"`
+	APIKey          string `json:"apiKey"`
+	Endpoint        string `json:"endpoint"`
+	LoadedSpoolID   string
+	IntegrationType string
 }
 
 // Printer retrieves a printer by id from the database.
@@ -32,11 +33,12 @@ func (c *Client) Printer(printerID string) (Printer, error) {
 		}
 
 		printer = Printer{
-			ID:            printerID,
-			Alias:         string(pv.Get([]byte(Alias))),
-			APIKey:        string(pv.Get([]byte(APIKey))),
-			Endpoint:      string(pv.Get([]byte(Endpoint))),
-			LoadedSpoolID: string(pv.Get([]byte(LoadedSpool))),
+			ID:              printerID,
+			Alias:           string(pv.Get([]byte(Alias))),
+			APIKey:          string(pv.Get([]byte(APIKey))),
+			Endpoint:        string(pv.Get([]byte(Endpoint))),
+			LoadedSpoolID:   string(pv.Get([]byte(LoadedSpool))),
+			IntegrationType: string(pv.Get([]byte(IntegrationType))),
 		}
 
 		return nil
@@ -52,9 +54,10 @@ func (c *Client) Printers(pageID *string) (IdentifierPage, error) {
 
 // NewPrinterRequest is the required data to create a new printer.
 type NewPrinterRequest struct {
-	Name     string
-	APIKey   string
-	Endpoint string
+	Name            string
+	APIKey          string
+	Endpoint        string
+	IntegrationType string
 }
 
 // CreatePrinter creates a printer in the database.
@@ -72,6 +75,7 @@ func (c *Client) CreatePrinter(request NewPrinterRequest) (string, error) {
 		pv.Put([]byte(Alias), []byte(request.Name))
 		pv.Put([]byte(APIKey), []byte(request.APIKey))
 		pv.Put([]byte(Endpoint), []byte(request.Endpoint))
+		pv.Put([]byte(IntegrationType), []byte(request.IntegrationType))
 
 		return nil
 	})
